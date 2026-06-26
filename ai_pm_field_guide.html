@@ -1,0 +1,2222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The AI Product Manager Field Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #111118;
+    --bg3: #16161e;
+    --card: #1a1a24;
+    --card2: #1f1f2e;
+    --border: #2a2a3a;
+    --border2: #333348;
+    --accent: #f5a623;
+    --accent2: #e8834a;
+    --accent3: #c85fa0;
+    --accent4: #4fc4cf;
+    --text: #e8e8f0;
+    --text2: #9898b0;
+    --text3: #5a5a72;
+    --green: #4cd98c;
+    --purple: #9b6dff;
+    --red: #ff6b6b;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* GRAIN OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* HEADER */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,10,15,0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+  }
+  .header-brand {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .header-brand span { color: var(--accent); }
+  .header-meta {
+    font-size: 0.72rem;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.04em;
+  }
+
+  /* NAV TABS */
+  .nav-wrap {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    position: sticky;
+    top: 56px;
+    z-index: 99;
+  }
+  .nav-wrap::-webkit-scrollbar { display: none; }
+  .nav-tabs {
+    display: flex;
+    gap: 0;
+    min-width: max-content;
+  }
+  .nav-tab {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text3);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    user-select: none;
+  }
+  .nav-tab:hover { color: var(--text2); }
+  .nav-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* HERO */
+  .hero {
+    padding: 5rem 2rem 4rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+  .hero-tag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    text-transform: uppercase;
+    background: rgba(245,166,35,0.1);
+    border: 1px solid rgba(245,166,35,0.25);
+    border-radius: 2px;
+    padding: 0.3rem 0.7rem;
+    margin-bottom: 1.2rem;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 5vw, 3.6rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin-bottom: 1.4rem;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .hero p {
+    font-size: 1rem;
+    color: var(--text2);
+    max-width: 480px;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+  }
+  .stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.72rem;
+    color: var(--text3);
+    margin-top: 0.3rem;
+    letter-spacing: 0.02em;
+  }
+
+  /* SECTION */
+  .section { display: none; }
+  .section.active { display: block; }
+  .section-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 5rem;
+  }
+  .section-header {
+    margin-bottom: 2.5rem;
+  }
+  .section-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.6rem;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.9rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+  .section-sub {
+    font-size: 0.9rem;
+    color: var(--text2);
+  }
+
+  /* CARDS GRID */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+  }
+  .topic-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .topic-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .topic-card:hover {
+    border-color: var(--border2);
+    background: var(--card2);
+    transform: translateY(-2px);
+  }
+  .topic-card:hover::after { transform: scaleX(1); }
+  .card-icon { font-size: 1.5rem; margin-bottom: 0.8rem; }
+  .card-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text);
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.01em;
+  }
+  .card-desc {
+    font-size: 0.78rem;
+    color: var(--text2);
+    line-height: 1.55;
+    margin-bottom: 0.8rem;
+  }
+  .card-tags {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+  .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--text3);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 0.15rem 0.4rem;
+  }
+  .card-arrow {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    color: var(--text3);
+    font-size: 0.8rem;
+    transition: all 0.2s;
+  }
+  .topic-card:hover .card-arrow { color: var(--accent); transform: translate(2px,-2px); }
+
+  /* EXPANDED CARD PANEL */
+  .panel-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(5,5,10,0.85);
+    z-index: 200;
+    backdrop-filter: blur(6px);
+  }
+  .panel-overlay.open { display: flex; align-items: flex-start; justify-content: flex-end; }
+  .panel {
+    background: var(--bg3);
+    border-left: 1px solid var(--border2);
+    width: min(700px, 92vw);
+    height: 100vh;
+    overflow-y: auto;
+    padding: 2.5rem;
+    position: relative;
+    animation: slideIn 0.3s ease;
+  }
+  @keyframes slideIn { from { transform: translateX(40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  .panel-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    border-radius: 6px;
+    padding: 0.4rem 0.7rem;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.15s;
+  }
+  .panel-close:hover { border-color: var(--accent); color: var(--accent); }
+  .panel-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+  .panel-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+    padding-right: 3rem;
+  }
+  .panel-summary {
+    font-size: 0.88rem;
+    color: var(--text2);
+    margin-bottom: 2rem;
+    line-height: 1.7;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .panel h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    color: var(--text);
+    margin: 1.8rem 0 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .panel h3::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 1em;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+  .panel p { font-size: 0.84rem; color: var(--text2); line-height: 1.7; margin-bottom: 0.7rem; }
+  .panel ul { padding-left: 1.2rem; margin-bottom: 0.8rem; }
+  .panel ul li { font-size: 0.83rem; color: var(--text2); margin-bottom: 0.35rem; line-height: 1.55; }
+  .panel ul li strong { color: var(--text); font-weight: 500; }
+
+  /* TABLE */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0 1.5rem;
+    font-size: 0.78rem;
+  }
+  .data-table th {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    background: var(--card);
+    color: var(--text2);
+    font-weight: 500;
+    border-bottom: 1px solid var(--border2);
+    white-space: nowrap;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+  }
+  .data-table td {
+    padding: 0.55rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text2);
+    vertical-align: top;
+  }
+  .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .data-table td:first-child { color: var(--text); font-weight: 500; }
+
+  /* CODE BLOCK */
+  .code-block {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.2rem 1.4rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.76rem;
+    color: var(--accent4);
+    line-height: 1.6;
+    margin: 1rem 0;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .code-block .cm { color: var(--text3); }
+  .code-block .kw { color: var(--accent); }
+  .code-block .str { color: var(--green); }
+  .code-block .num { color: var(--purple); }
+
+  /* PILL BADGE */
+  .badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .badge-green { background: rgba(76,217,140,0.12); color: var(--green); border: 1px solid rgba(76,217,140,0.25); }
+  .badge-amber { background: rgba(245,166,35,0.12); color: var(--accent); border: 1px solid rgba(245,166,35,0.25); }
+  .badge-red { background: rgba(255,107,107,0.12); color: var(--red); border: 1px solid rgba(255,107,107,0.25); }
+  .badge-purple { background: rgba(155,109,255,0.12); color: var(--purple); border: 1px solid rgba(155,109,255,0.25); }
+  .badge-cyan { background: rgba(79,196,207,0.12); color: var(--accent4); border: 1px solid rgba(79,196,207,0.25); }
+
+  /* CHECKLIST */
+  .checklist { list-style: none; padding: 0; margin: 1rem 0 1.5rem; }
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    color: var(--text2);
+    line-height: 1.5;
+    cursor: pointer;
+    transition: background 0.15s;
+    margin-bottom: 0.25rem;
+    border: 1px solid transparent;
+  }
+  .checklist li:hover { background: var(--card); border-color: var(--border); }
+  .checklist li.checked { text-decoration: line-through; color: var(--text3); }
+  .check-box {
+    width: 18px; height: 18px;
+    border: 1.5px solid var(--border2);
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+    font-size: 0.6rem;
+  }
+  .checklist li.checked .check-box {
+    background: var(--green);
+    border-color: var(--green);
+    color: #000;
+  }
+  .checklist-progress {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text3);
+    margin-bottom: 0.5rem;
+  }
+
+  /* FRAMEWORK BLOCKS */
+  .framework-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.8rem;
+    margin: 1rem 0 1.5rem;
+  }
+  .fw-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+  }
+  .fw-card-label {
+    font-size: 0.7rem;
+    font-family: 'DM Mono', monospace;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+  .fw-card-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+  }
+  .fw-card-desc { font-size: 0.74rem; color: var(--text2); line-height: 1.5; }
+
+  /* TOOLS SECTION */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  .tool-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    display: flex;
+    gap: 0.8rem;
+    align-items: flex-start;
+  }
+  .tool-emoji { font-size: 1.3rem; flex-shrink: 0; }
+  .tool-name { font-weight: 600; font-size: 0.82rem; color: var(--text); margin-bottom: 0.2rem; }
+  .tool-use { font-size: 0.74rem; color: var(--text2); line-height: 1.4; }
+
+  /* METRICS TABLE */
+  .metrics-table-wrap { overflow-x: auto; margin: 1rem 0 1.5rem; }
+
+  /* CALLOUT */
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: rgba(245,166,35,0.06);
+    border-radius: 0 6px 6px 0;
+    padding: 0.9rem 1.2rem;
+    margin: 1rem 0;
+  }
+  .callout.info { border-color: var(--accent4); background: rgba(79,196,207,0.06); }
+  .callout.success { border-color: var(--green); background: rgba(76,217,140,0.06); }
+  .callout-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+  .callout.info .callout-label { color: var(--accent4); }
+  .callout.success .callout-label { color: var(--green); }
+  .callout p { font-size: 0.82rem; color: var(--text2); margin: 0; }
+
+  /* DOMAIN SECTION ALL TOPICS */
+  .domain-section {
+    margin-bottom: 3rem;
+  }
+  .domain-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text3);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .domain-count {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.1rem 0.5rem;
+    font-size: 0.65rem;
+    color: var(--text3);
+  }
+
+  /* SEARCH */
+  .search-wrap {
+    margin-bottom: 2rem;
+    position: relative;
+  }
+  .search-input {
+    width: 100%;
+    max-width: 480px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.7rem 1rem 0.7rem 2.5rem;
+    color: var(--text);
+    font-size: 0.85rem;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: var(--text3); }
+  .search-icon {
+    position: absolute;
+    left: 0.8rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text3);
+    font-size: 0.85rem;
+  }
+
+  /* RESPONSIVE */
+  @media(max-width: 700px) {
+    .hero { grid-template-columns: 1fr; gap: 2rem; padding: 3rem 1.2rem 2rem; }
+    .hero-stats { grid-template-columns: repeat(2, 1fr); }
+    .section-inner { padding: 2rem 1.2rem 4rem; }
+    .panel { width: 100vw; }
+    .cards-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ABOUT */
+  .about-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  .about-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .about-card p { font-size: 0.84rem; color: var(--text2); line-height: 1.7; }
+
+  /* ROADMAP TIMELINE */
+  .timeline { padding-left: 1.2rem; border-left: 2px solid var(--border); margin: 1rem 0; }
+  .tl-item { padding: 0 0 1.5rem 1.5rem; position: relative; }
+  .tl-dot {
+    position: absolute;
+    left: -6px; top: 4px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg3);
+  }
+  .tl-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+  }
+  .tl-title { font-weight: 600; font-size: 0.88rem; color: var(--text); margin-bottom: 0.3rem; }
+  .tl-desc { font-size: 0.8rem; color: var(--text2); line-height: 1.55; }
+
+  /* TEMPLATE BLOCK */
+  .template-block {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.4rem;
+    margin: 1rem 0;
+    font-size: 0.8rem;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+  .template-block h4 {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+  .template-block .field {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.3rem;
+  }
+  .template-block .field .key { color: var(--text3); min-width: 140px; flex-shrink: 0; }
+  .template-block .field .val { color: var(--text2); }
+
+  /* SCORE METER */
+  .meter { margin: 0.4rem 0 0.8rem; }
+  .meter-label { font-size: 0.73rem; color: var(--text2); display: flex; justify-content: space-between; margin-bottom: 0.3rem; }
+  .meter-bar { height: 5px; background: var(--border); border-radius: 999px; overflow: hidden; }
+  .meter-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-brand">The AI PM <span>Field Guide</span></div>
+  <div class="header-meta">Living Reference — v1.0 — April 2026</div>
+</header>
+
+<nav class="nav-wrap">
+  <div class="nav-tabs">
+    <div class="nav-tab active" onclick="switchTab('all')">All Topics</div>
+    <div class="nav-tab" onclick="switchTab('strategy')">Strategy</div>
+    <div class="nav-tab" onclick="switchTab('discovery')">Discovery</div>
+    <div class="nav-tab" onclick="switchTab('delivery')">Delivery</div>
+    <div class="nav-tab" onclick="switchTab('data')">Data & Metrics</div>
+    <div class="nav-tab" onclick="switchTab('ux')">UX & Ethics</div>
+    <div class="nav-tab" onclick="switchTab('tools')">Tools & Frameworks</div>
+    <div class="nav-tab" onclick="switchTab('checklists')">Checklists</div>
+    <div class="nav-tab" onclick="switchTab('templates')">Templates</div>
+    <div class="nav-tab" onclick="switchTab('about')">About</div>
+  </div>
+</nav>
+
+<!-- ALL TOPICS (HERO + GRID) -->
+<div id="section-all" class="section active">
+  <div class="hero">
+    <div>
+      <div class="hero-tag">Complete Reference · April 2026</div>
+      <h1>The AI Product Manager <em>Field Guide</em></h1>
+      <p>Every skill, framework, template, and tool an AI Product Manager needs — from strategy to shipping. Built for PMs building AI-native products.</p>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-card"><div class="stat-number">32</div><div class="stat-label">Topics covered</div></div>
+      <div class="stat-card"><div class="stat-number">7</div><div class="stat-label">Domain areas</div></div>
+      <div class="stat-card"><div class="stat-number">18+</div><div class="stat-label">Frameworks</div></div>
+      <div class="stat-card"><div class="stat-number">12</div><div class="stat-label">Templates</div></div>
+    </div>
+  </div>
+
+  <div class="section-inner" style="padding-top:0">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" id="searchInput" placeholder="Search topics, tools, frameworks..." oninput="filterCards()" />
+    </div>
+
+    <div id="allCardsContainer">
+
+    <div class="domain-section">
+      <div class="domain-label">Strategy & Vision <span class="domain-count">6</span></div>
+      <div class="cards-grid">
+        <div class="topic-card" onclick="openPanel('ai-vision')">
+          <div class="card-icon">🧭</div>
+          <div class="card-title">AI Product Vision & Strategy</div>
+          <div class="card-desc">Define what your AI product should achieve. Align technical capabilities with business outcomes and user needs.</div>
+          <div class="card-tags"><span class="tag">vision</span><span class="tag">OKRs</span><span class="tag">positioning</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="topic-card" onclick="openPanel('market')">
+          <div class="card-icon">🗺️</div>
+          <div class="card-title">AI Market Analysis</div>
+          <div class="card-desc">TAM/SAM/SOM for AI products. Competitive moats, model commoditization risks, and differentiation strategies.</div>
+          <div class="card-tags"><span class="tag">TAM</span><span class="tag">competitive</span><span class="tag">moats</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="topic-card" onclick="openPanel('roadmap')">
+          <div class="card-icon">🛣️</div>
+          <div class="card-title">AI Product Roadmapping</div>
+          <div class="card-desc">Build roadmaps that account for model capability evolution, data flywheels, and responsible AI milestones.</div>
+          <div class="card-tags"><span class="tag">roadmap</span><span class="tag">Now/Next/Later</span><span class="tag">milestones</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="topic-card" onclick="openPanel('biz-model')">
+          <div class="card-icon">💡</div>
+          <div class="card-title">AI Business Models</div>
+          <div class="card-desc">SaaS, usage-based, outcome-based pricing for AI. Unit economics, cost-to-serve, gross margin pressure.</div>
+          <div class="card-tags"><span class="tag">pricing</span><span class="tag">unit economics</span><span class="tag">monetization</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="topic-card" onclick="openPanel('prioritization')">
+          <div class="card-icon">⚖️</div>
+          <div class="card-title">AI Feature Prioritization</div>
+          <div class="card-desc">RICE, ICE, MoSCoW, and AI-specific scoring methods. Weighing accuracy improvements vs new features.</div>
+          <div class="card-tags"><span class="tag">RICE</span><span class="tag">scoring</span><span class="tag">tradeoffs</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="topic-card" onclick="openPanel('build-buy')">
+          <div class="card-icon">🔀</div>
+          <div class="card-title">Build vs Buy vs Partner</div>
+          <div class="card-desc">When to use foundation models vs fine-tune vs build from scratch. API wrappers, vertical AI, and infra decisions.</div>
+          <div class="card-tags"><span class="tag">fine-tune</span><span class="tag">API</span><span class="tag">foundation models</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="domain-section">
+      <div class="domain-label">Discovery & Research <span class="domain-count">5</span></div>
+      <div class="cards-grid">
+        <div class="topic-card" onclick="openPanel('user-research')">
+          <div class="card-icon">🧪</div>
+          <div class="card-title">AI User Research</div>
+          <div class="card-desc">Research methods for AI products: mental model interviews, trust elicitation, AI anxiety patterns, and expectation calibration.</div>
+          <div class="card-tags"><span class="tag">interviews</span><span class="tag">trust</span><span class="tag">mental models</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="topic-card" onclick="openPanel('problem-framing')">
+          <div class="card-icon">🎯</div>
+          <div class="card-title">Problem Framing for AI</div>
+          <div class="card-desc">Translate fuzzy business problems into ML problem statements. Classification vs regression vs generation vs retrieval.</div>
+          <div class="card-tags"><span class="tag">problem space</span><span class="tag">ML formulation</span><span class="tag">scope</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="topic-card" onclick="openPanel('jobs-to-be-done')">
+          <div class="card-icon">🔧</div>
+          <div class="card-title">JTBD for AI Products</div>
+          <div class="card-desc">Jobs-to-be-Done applied to AI: functional, emotional, and social jobs. When AI replaces a job vs augments it.</div>
+          <div class="card-tags"><span class="tag">JTBD</span><span class="tag">augmentation</span><span class="tag">automation</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="topic-card" onclick="openPanel('persona')">
+          <div class="card-icon">👥</div>
+          <div class="card-title">AI User Personas</div>
+          <div class="card-desc">Persona archetypes for AI products: AI skeptics, power users, casual adopters, and enterprise buyers. Trust and risk tolerance mapping.</div>
+          <div class="card-tags"><span class="tag">personas</span><span class="tag">trust ladder</span><span class="tag">adoption</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="topic-card" onclick="openPanel('opportunity-sizing')">
+          <div class="card-icon">📐</div>
+          <div class="card-title">Opportunity Sizing</div>
+          <div class="card-desc">Quantify the value of AI features: time saved, error reduction, conversion uplift. Expected value trees for AI investments.</div>
+          <div class="card-tags"><span class="tag">ROI</span><span class="tag">value tree</span><span class="tag">impact</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="domain-section">
+      <div class="domain-label">Delivery & Execution <span class="domain-count">6</span></div>
+      <div class="cards-grid">
+        <div class="topic-card" onclick="openPanel('prd')">
+          <div class="card-icon">📄</div>
+          <div class="card-title">AI PRD Writing</div>
+          <div class="card-desc">Product requirement docs for AI features: success criteria, failure modes, model card, edge case catalog, and human fallback spec.</div>
+          <div class="card-tags"><span class="tag">PRD</span><span class="tag">model card</span><span class="tag">edge cases</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="topic-card" onclick="openPanel('agile-ai')">
+          <div class="card-icon">🔄</div>
+          <div class="card-title">Agile for AI Teams</div>
+          <div class="card-desc">Adapting sprints for experimentation cycles. Model iteration vs product iteration. Managing R&D uncertainty in a scrum cadence.</div>
+          <div class="card-tags"><span class="tag">sprints</span><span class="tag">experiments</span><span class="tag">velocity</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="topic-card" onclick="openPanel('exp-design')">
+          <div class="card-icon">🧬</div>
+          <div class="card-title">Experiment Design</div>
+          <div class="card-desc">A/B tests, shadow mode, canary launches, and champion-challenger for AI. Statistical significance, novelty effects, holdout groups.</div>
+          <div class="card-tags"><span class="tag">A/B test</span><span class="tag">shadow mode</span><span class="tag">holdout</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="topic-card" onclick="openPanel('stakeholder')">
+          <div class="card-icon">🤝</div>
+          <div class="card-title">Stakeholder Management</div>
+          <div class="card-desc">Managing AI hype cycles internally. Communicating model limitations, probabilistic outputs, and uncertainty to non-technical leaders.</div>
+          <div class="card-tags"><span class="tag">communication</span><span class="tag">hype management</span><span class="tag">alignment</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="topic-card" onclick="openPanel('go-to-market')">
+          <div class="card-icon">🚀</div>
+          <div class="card-title">AI Product GTM</div>
+          <div class="card-desc">Launch strategy for AI features: beta programs, responsible disclosure, capability messaging, and managing failure in public.</div>
+          <div class="card-tags"><span class="tag">launch</span><span class="tag">beta</span><span class="tag">messaging</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="topic-card" onclick="openPanel('ml-collab')">
+          <div class="card-icon">🤖</div>
+          <div class="card-title">Working with ML Teams</div>
+          <div class="card-desc">PM-ML interface: scoping experiments, interpreting model metrics, writing evaluation criteria, and translating product goals into training objectives.</div>
+          <div class="card-tags"><span class="tag">evaluation</span><span class="tag">training data</span><span class="tag">feedback loops</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="domain-section">
+      <div class="domain-label">Data, Metrics & Evaluation <span class="domain-count">5</span></div>
+      <div class="cards-grid">
+        <div class="topic-card" onclick="openPanel('north-star')">
+          <div class="card-icon">⭐</div>
+          <div class="card-title">North Star & AI Metrics</div>
+          <div class="card-desc">Defining success for AI products: AI-assisted task completion, trust scores, override rates, and model adoption depth.</div>
+          <div class="card-tags"><span class="tag">north star</span><span class="tag">KPIs</span><span class="tag">override rate</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="topic-card" onclick="openPanel('eval-framework')">
+          <div class="card-icon">📊</div>
+          <div class="card-title">Evaluation Frameworks</div>
+          <div class="card-desc">Model evals from a PM lens: golden sets, LLM-as-judge, human evals, RLHF signal collection, and regression suites.</div>
+          <div class="card-tags"><span class="tag">evals</span><span class="tag">LLM-judge</span><span class="tag">regression</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="topic-card" onclick="openPanel('data-strategy')">
+          <div class="card-icon">🗄️</div>
+          <div class="card-title">Data Strategy</div>
+          <div class="card-desc">Data flywheels, feedback loops, labeling pipelines, consent and privacy architecture, and data moat building.</div>
+          <div class="card-tags"><span class="tag">flywheel</span><span class="tag">labeling</span><span class="tag">privacy</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="topic-card" onclick="openPanel('observability')">
+          <div class="card-icon">🔭</div>
+          <div class="card-title">AI Product Observability</div>
+          <div class="card-desc">What to monitor in production: drift detection, failure clustering, quality degradation, cost per feature, and LLM trace dashboards.</div>
+          <div class="card-tags"><span class="tag">drift</span><span class="tag">monitoring</span><span class="tag">traces</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="topic-card" onclick="openPanel('feedback')">
+          <div class="card-icon">💬</div>
+          <div class="card-title">Feedback Loop Design</div>
+          <div class="card-desc">Implicit vs explicit signals, thumbs up/down, correction flows, active learning triggers, and RLHF data collection in products.</div>
+          <div class="card-tags"><span class="tag">RLHF</span><span class="tag">signals</span><span class="tag">active learning</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="domain-section">
+      <div class="domain-label">UX, Trust & Ethics <span class="domain-count">5</span></div>
+      <div class="cards-grid">
+        <div class="topic-card" onclick="openPanel('ai-ux')">
+          <div class="card-icon">🎨</div>
+          <div class="card-title">AI UX Patterns</div>
+          <div class="card-desc">Progressive disclosure of AI, confidence indicators, graceful degradation, explanation UIs, and building trust through transparency.</div>
+          <div class="card-tags"><span class="tag">confidence UI</span><span class="tag">explainability</span><span class="tag">trust</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="topic-card" onclick="openPanel('responsible-ai')">
+          <div class="card-icon">⚖️</div>
+          <div class="card-title">Responsible AI</div>
+          <div class="card-desc">Bias audits, fairness metrics, disparate impact testing, red-teaming, and operationalizing responsible AI principles in product.</div>
+          <div class="card-tags"><span class="tag">fairness</span><span class="tag">bias</span><span class="tag">red-teaming</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="topic-card" onclick="openPanel('transparency')">
+          <div class="card-icon">🪟</div>
+          <div class="card-title">AI Transparency & Explainability</div>
+          <div class="card-desc">When and how to explain AI decisions: LIME, SHAP in UX, disclosure standards, regulation compliance (EU AI Act, GDPR).</div>
+          <div class="card-tags"><span class="tag">XAI</span><span class="tag">EU AI Act</span><span class="tag">disclosure</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="topic-card" onclick="openPanel('human-in-loop')">
+          <div class="card-icon">🧑‍✈️</div>
+          <div class="card-title">Human-in-the-Loop Design</div>
+          <div class="card-desc">When AI should escalate, confidence thresholds, override mechanics, accountability design, and minimal interruption principles.</div>
+          <div class="card-tags"><span class="tag">HITL</span><span class="tag">escalation</span><span class="tag">override</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="topic-card" onclick="openPanel('safety')">
+          <div class="card-icon">🛡️</div>
+          <div class="card-title">AI Safety in Products</div>
+          <div class="card-desc">Guardrails, content moderation, abuse surface mapping, jailbreak exposure, and product-level safety playbooks.</div>
+          <div class="card-tags"><span class="tag">guardrails</span><span class="tag">abuse</span><span class="tag">safety</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="domain-section">
+      <div class="domain-label">AI PM Skills & Career <span class="domain-count">5</span></div>
+      <div class="cards-grid">
+        <div class="topic-card" onclick="openPanel('tech-fluency')">
+          <div class="card-icon">🧠</div>
+          <div class="card-title">Technical Fluency for AI PMs</div>
+          <div class="card-desc">ML concepts every PM must know: embeddings, transformers, fine-tuning, RAG, latency/cost tradeoffs, model evaluation.</div>
+          <div class="card-tags"><span class="tag">embeddings</span><span class="tag">transformers</span><span class="tag">RAG</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="topic-card" onclick="openPanel('prompt-pm')">
+          <div class="card-icon">✍️</div>
+          <div class="card-title">Prompt Engineering for PMs</div>
+          <div class="card-desc">PM-level prompt design: writing system prompts, few-shot examples, output format specs, and prompt regression testing.</div>
+          <div class="card-tags"><span class="tag">system prompt</span><span class="tag">few-shot</span><span class="tag">regression</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="topic-card" onclick="openPanel('interview')">
+          <div class="card-icon">💼</div>
+          <div class="card-title">AI PM Interview Prep</div>
+          <div class="card-desc">Frameworks for design, estimation, strategy, and behavioral questions in AI PM interviews at top tech companies.</div>
+          <div class="card-tags"><span class="tag">interview</span><span class="tag">FAANG</span><span class="tag">case prep</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="topic-card" onclick="openPanel('team-structure')">
+          <div class="card-icon">🏗️</div>
+          <div class="card-title">AI Team Structures</div>
+          <div class="card-desc">Centralised vs embedded AI teams, PM-ML-Design-Data triads, and organizational models for AI product development.</div>
+          <div class="card-tags"><span class="tag">org design</span><span class="tag">team model</span><span class="tag">embedded</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="topic-card" onclick="openPanel('pm-tools')">
+          <div class="card-icon">🛠️</div>
+          <div class="card-title">AI PM Tool Stack</div>
+          <div class="card-desc">Tools for discovery, roadmapping, analytics, experimentation, and collaboration in an AI product team in 2026.</div>
+          <div class="card-tags"><span class="tag">tools</span><span class="tag">stack</span><span class="tag">2026</span></div>
+          <div class="card-arrow">↗</div>
+        </div>
+      </div>
+    </div>
+
+    </div><!-- end allCardsContainer -->
+  </div>
+</div>
+
+<!-- STRATEGY -->
+<div id="section-strategy" class="section">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-tag">Domain 01</div>
+      <div class="section-title">Strategy & Vision</div>
+      <div class="section-sub">Define what your AI product should achieve and how to win.</div>
+    </div>
+    <div class="cards-grid">
+      <div class="topic-card" onclick="openPanel('ai-vision')"><div class="card-icon">🧭</div><div class="card-title">AI Product Vision & Strategy</div><div class="card-desc">Align technical capabilities with business outcomes and user needs.</div><div class="card-tags"><span class="tag">vision</span><span class="tag">OKRs</span></div><div class="card-arrow">↗</div></div>
+      <div class="topic-card" onclick="openPanel('market')"><div class="card-icon">🗺️</div><div class="card-title">AI Market Analysis</div><div class="card-desc">TAM/SAM/SOM, competitive moats, model commoditization risks.</div><div class="card-tags"><span class="tag">TAM</span><span class="tag">competitive</span></div><div class="card-arrow">↗</div></div>
+      <div class="topic-card" onclick="openPanel('roadmap')"><div class="card-icon">🛣️</div><div class="card-title">AI Product Roadmapping</div><div class="card-desc">Build roadmaps accounting for model evolution and data flywheels.</div><div class="card-tags"><span class="tag">roadmap</span><span class="tag">milestones</span></div><div class="card-arrow">↗</div></div>
+      <div class="topic-card" onclick="openPanel('biz-model')"><div class="card-icon">💡</div><div class="card-title">AI Business Models</div><div class="card-desc">Usage-based, outcome-based pricing. Unit economics and margin pressure.</div><div class="card-tags"><span class="tag">pricing</span><span class="tag">unit economics</span></div><div class="card-arrow">↗</div></div>
+      <div class="topic-card" onclick="openPanel('prioritization')"><div class="card-icon">⚖️</div><div class="card-title">AI Feature Prioritization</div><div class="card-desc">RICE, ICE, MoSCoW, and AI-specific scoring methods.</div><div class="card-tags"><span class="tag">RICE</span><span class="tag">scoring</span></div><div class="card-arrow">↗</div></div>
+      <div class="topic-card" onclick="openPanel('build-buy')"><div class="card-icon">🔀</div><div class="card-title">Build vs Buy vs Partner</div><div class="card-desc">API wrappers vs vertical AI vs foundation model strategies.</div><div class="card-tags"><span class="tag">fine-tune</span><span class="tag">API</span></div><div class="card-arrow">↗</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- DISCOVERY -->
+<div id="section-discovery" class="section">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-tag">Domain 02</div>
+      <div class="section-title">Discovery & Research</div>
+      <div class="section-sub">Understand users and frame the right AI problem to solve.</div>
+    </div>
+    <div class="cards-grid">
+      <div class="topic-card" onclick="openPanel('user-research')"><div class="card-icon">🧪</div><div class="card-title">AI User Research</div><div class="card-desc">Mental models, trust elicitation, AI anxiety patterns.</div><div class="card-tags"><span class="tag">interviews</span><span class="tag">trust</span></div><div class="card-arrow">↗</div></div>
+      <div class="topic-card" onclick="openPanel('problem-framing')"><div class="card-icon">🎯</div><div class="card-title">Problem Framing for AI</div><div class="card-desc">Translate business problems into ML problem statements.</div><div class="card-tags"><span class="tag">ML formulation</span><span class="tag">scope</span></div><div class="card-arrow">↗</div></div>
+      <div class="topic-card" onclick="openPanel('jobs-to-be-done')"><div class="card-icon">🔧</div><div class="card-title">JTBD for AI Products</div><div class="card-desc">When AI replaces a job vs augments it.</div><div class="card-tags"><span class="tag">JTBD</span><span class="tag">augmentation</span></div><div class="card-arrow">↗</div></div>
+      <div class="topic-card" onclick="openPanel('persona')"><div class="card-icon">👥</div><div class="card-title">AI User Personas</div><div class="card-desc">AI skeptics, power users, casual adopters, enterprise buyers.</div><div class="card-tags"><span class="tag">personas</span><span class="tag">trust ladder</span></div><div class="card-arrow">↗</div></div>
+      <div class="topic-card" onclick="openPanel('opportunity-sizing')"><div class="card-icon">📐</div><div class="card-title">Opportunity Sizing</div><div class="card-desc">Quantify value: time saved, error reduction, conversion uplift.</div><div class="card-tags"><span class="tag">ROI</span><span class="tag">value tree</span></div><div class="card-arrow">↗</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- DELIVERY -->
+<div id="section-delivery" class="section">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-tag">Domain 03</div>
+      <div class="section-title">Delivery & Execution</div>
+      <div class="section-sub">Spec, ship, and iterate on AI features with confidence.</div>
+    </div>
+    <div class="cards-grid">
+      <div class="topic-card" onclick="openPanel('prd')"><div class="card-icon">📄</div><div class="card-title">AI PRD Writing</div><div class="card-desc">Success criteria, failure modes, model cards, edge case catalogs.</div><div class="card-tags"><span class="tag">PRD</span><span class="tag">model card</span></div><div class="card-arrow">↗</div></div>
+      <div class="topic-card" onclick="openPanel('agile-ai')"><div class="card-icon">🔄</div><div class="card-title">Agile for AI Teams</div><div class="card-desc">Model iteration vs product iteration. Managing R&D uncertainty.</div><div class="card-tags"><span class="tag">sprints</span><span class="tag">experiments</span></div><div class="card-arrow">↗</div></div>
+      <div class="topic-card" onclick="openPanel('exp-design')"><div class="card-icon">🧬</div><div class="card-title">Experiment Design</div><div class="card-desc">A/B, shadow mode, canary, champion-challenger for AI.</div><div class="card-tags"><span class="tag">A/B test</span><span class="tag">shadow mode</span></div><div class="card-arrow">↗</div></div>
+      <div class="topic-card" onclick="openPanel('stakeholder')"><div class="card-icon">🤝</div><div class="card-title">Stakeholder Management</div><div class="card-desc">Communicating AI limitations and uncertainty to leadership.</div><div class="card-tags"><span class="tag">communication</span><span class="tag">hype management</span></div><div class="card-arrow">↗</div></div>
+      <div class="topic-card" onclick="openPanel('go-to-market')"><div class="card-icon">🚀</div><div class="card-title">AI Product GTM</div><div class="card-desc">Beta programs, responsible disclosure, capability messaging.</div><div class="card-tags"><span class="tag">launch</span><span class="tag">beta</span></div><div class="card-arrow">↗</div></div>
+      <div class="topic-card" onclick="openPanel('ml-collab')"><div class="card-icon">🤖</div><div class="card-title">Working with ML Teams</div><div class="card-desc">Scoping experiments, interpreting model metrics, evaluation criteria.</div><div class="card-tags"><span class="tag">evaluation</span><span class="tag">feedback loops</span></div><div class="card-arrow">↗</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- DATA -->
+<div id="section-data" class="section">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-tag">Domain 04</div>
+      <div class="section-title">Data, Metrics & Evaluation</div>
+      <div class="section-sub">Measure what matters for AI products and build feedback loops.</div>
+    </div>
+    <div class="cards-grid">
+      <div class="topic-card" onclick="openPanel('north-star')"><div class="card-icon">⭐</div><div class="card-title">North Star & AI Metrics</div><div class="card-desc">Trust scores, override rates, AI-assisted task completion metrics.</div><div class="card-tags"><span class="tag">north star</span><span class="tag">KPIs</span></div><div class="card-arrow">↗</div></div>
+      <div class="topic-card" onclick="openPanel('eval-framework')"><div class="card-icon">📊</div><div class="card-title">Evaluation Frameworks</div><div class="card-desc">Golden sets, LLM-as-judge, human evals, regression suites.</div><div class="card-tags"><span class="tag">evals</span><span class="tag">LLM-judge</span></div><div class="card-arrow">↗</div></div>
+      <div class="topic-card" onclick="openPanel('data-strategy')"><div class="card-icon">🗄️</div><div class="card-title">Data Strategy</div><div class="card-desc">Data flywheels, feedback loops, labeling pipelines, data moats.</div><div class="card-tags"><span class="tag">flywheel</span><span class="tag">labeling</span></div><div class="card-arrow">↗</div></div>
+      <div class="topic-card" onclick="openPanel('observability')"><div class="card-icon">🔭</div><div class="card-title">AI Product Observability</div><div class="card-desc">Drift detection, failure clustering, cost per feature, trace dashboards.</div><div class="card-tags"><span class="tag">drift</span><span class="tag">monitoring</span></div><div class="card-arrow">↗</div></div>
+      <div class="topic-card" onclick="openPanel('feedback')"><div class="card-icon">💬</div><div class="card-title">Feedback Loop Design</div><div class="card-desc">Implicit vs explicit signals, correction flows, RLHF data collection.</div><div class="card-tags"><span class="tag">RLHF</span><span class="tag">signals</span></div><div class="card-arrow">↗</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- UX -->
+<div id="section-ux" class="section">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-tag">Domain 05</div>
+      <div class="section-title">UX, Trust & Ethics</div>
+      <div class="section-sub">Design AI experiences that are trustworthy, transparent, and safe.</div>
+    </div>
+    <div class="cards-grid">
+      <div class="topic-card" onclick="openPanel('ai-ux')"><div class="card-icon">🎨</div><div class="card-title">AI UX Patterns</div><div class="card-desc">Confidence indicators, graceful degradation, explanation UIs.</div><div class="card-tags"><span class="tag">confidence UI</span><span class="tag">explainability</span></div><div class="card-arrow">↗</div></div>
+      <div class="topic-card" onclick="openPanel('responsible-ai')"><div class="card-icon">⚖️</div><div class="card-title">Responsible AI</div><div class="card-desc">Bias audits, fairness metrics, disparate impact testing, red-teaming.</div><div class="card-tags"><span class="tag">fairness</span><span class="tag">bias</span></div><div class="card-arrow">↗</div></div>
+      <div class="topic-card" onclick="openPanel('transparency')"><div class="card-icon">🪟</div><div class="card-title">Transparency & Explainability</div><div class="card-desc">LIME, SHAP in UX, EU AI Act, GDPR disclosure standards.</div><div class="card-tags"><span class="tag">XAI</span><span class="tag">EU AI Act</span></div><div class="card-arrow">↗</div></div>
+      <div class="topic-card" onclick="openPanel('human-in-loop')"><div class="card-icon">🧑‍✈️</div><div class="card-title">Human-in-the-Loop Design</div><div class="card-desc">Confidence thresholds, override mechanics, accountability design.</div><div class="card-tags"><span class="tag">HITL</span><span class="tag">escalation</span></div><div class="card-arrow">↗</div></div>
+      <div class="topic-card" onclick="openPanel('safety')"><div class="card-icon">🛡️</div><div class="card-title">AI Safety in Products</div><div class="card-desc">Guardrails, content moderation, abuse surface mapping.</div><div class="card-tags"><span class="tag">guardrails</span><span class="tag">safety</span></div><div class="card-arrow">↗</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TOOLS & FRAMEWORKS -->
+<div id="section-tools" class="section">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-tag">Reference</div>
+      <div class="section-title">Tools & Frameworks</div>
+      <div class="section-sub">The complete AI PM tool stack and decision frameworks for 2026.</div>
+    </div>
+
+    <div class="section-header" style="margin-bottom:1rem"><h3 style="font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--text)">Discovery & Research Tools</h3></div>
+    <div class="tools-grid">
+      <div class="tool-item"><div class="tool-emoji">🧪</div><div><div class="tool-name">Dovetail / Aurelius</div><div class="tool-use">User research synthesis, interview tagging, insight repositories</div></div></div>
+      <div class="tool-item"><div class="tool-emoji">📋</div><div><div class="tool-name">Maze / UserTesting</div><div class="tool-use">Usability testing for AI prototypes, tree testing, concept tests</div></div></div>
+      <div class="tool-item"><div class="tool-emoji">🗣️</div><div><div class="tool-name">Grain / Otter.ai</div><div class="tool-use">AI-powered interview transcription and analysis</div></div></div>
+      <div class="tool-item"><div class="tool-emoji">📊</div><div><div class="tool-name">Typeform / Sprig</div><div class="tool-use">In-product surveys, NPS, AI experience feedback forms</div></div></div>
+    </div>
+
+    <div class="section-header" style="margin:2rem 0 1rem"><h3 style="font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--text)">Roadmapping & Prioritization</h3></div>
+    <div class="tools-grid">
+      <div class="tool-item"><div class="tool-emoji">🗺️</div><div><div class="tool-name">Productboard / Linear</div><div class="tool-use">Feature scoring, roadmap views, customer feedback integration</div></div></div>
+      <div class="tool-item"><div class="tool-emoji">📌</div><div><div class="tool-name">Notion / Confluence</div><div class="tool-use">PRDs, specs, strategy docs, model cards, decision logs</div></div></div>
+      <div class="tool-item"><div class="tool-emoji">📈</div><div><div class="tool-name">Miro / FigJam</div><div class="tool-use">Journey maps, impact maps, dependency diagrams, workshops</div></div></div>
+      <div class="tool-item"><div class="tool-emoji">🔖</div><div><div class="tool-name">Coda / Airtable</div><div class="tool-use">Feature scoring spreadsheets, experiment trackers, OKR dashboards</div></div></div>
+    </div>
+
+    <div class="section-header" style="margin:2rem 0 1rem"><h3 style="font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--text)">Analytics & Experimentation</h3></div>
+    <div class="tools-grid">
+      <div class="tool-item"><div class="tool-emoji">📉</div><div><div class="tool-name">Amplitude / Mixpanel</div><div class="tool-use">User behavior, funnel analysis, cohort retention, AI feature adoption</div></div></div>
+      <div class="tool-item"><div class="tool-emoji">🧪</div><div><div class="tool-name">Statsig / LaunchDarkly</div><div class="tool-use">Feature flags, A/B test management, canary rollouts for AI</div></div></div>
+      <div class="tool-item"><div class="tool-emoji">🔭</div><div><div class="tool-name">Langfuse / Helicone</div><div class="tool-use">LLM observability, trace dashboards, cost per session, quality scoring</div></div></div>
+      <div class="tool-item"><div class="tool-emoji">📊</div><div><div class="tool-name">Grafana / Datadog</div><div class="tool-use">Infrastructure-level AI monitoring, latency, error rates, model drift</div></div></div>
+    </div>
+
+    <div class="section-header" style="margin:2rem 0 1rem"><h3 style="font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--text)">AI Prototyping & Evaluation</h3></div>
+    <div class="tools-grid">
+      <div class="tool-item"><div class="tool-emoji">🤖</div><div><div class="tool-name">Cursor / Claude</div><div class="tool-use">Rapid prototyping, spec validation, writing PRDs faster</div></div></div>
+      <div class="tool-item"><div class="tool-emoji">🔬</div><div><div class="tool-name">RAGAS / PromptFoo</div><div class="tool-use">Automated eval frameworks for RAG and prompt regression testing</div></div></div>
+      <div class="tool-item"><div class="tool-emoji">🎭</div><div><div class="tool-name">Braintrust / Patronus</div><div class="tool-use">LLM evaluation platforms, golden set management, CI/CD eval gates</div></div></div>
+      <div class="tool-item"><div class="tool-emoji">🏗️</div><div><div class="tool-name">Weights & Biases</div><div class="tool-use">Experiment tracking for ML, model performance dashboards</div></div></div>
+    </div>
+
+    <div class="section-header" style="margin:2rem 0 1rem"><h3 style="font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--text)">Key Frameworks for AI PMs</h3></div>
+    <div class="framework-grid">
+      <div class="fw-card"><div class="fw-card-label">Prioritization</div><div class="fw-card-title">RICE Score</div><div class="fw-card-desc">Reach × Impact × Confidence ÷ Effort. Add "accuracy delta" as an impact multiplier for AI features.</div></div>
+      <div class="fw-card"><div class="fw-card-label">Discovery</div><div class="fw-card-title">Opportunity Solution Tree</div><div class="fw-card-desc">Teresa Torres' OST adapted for AI: desired outcome → opportunities → AI solutions → experiments.</div></div>
+      <div class="fw-card"><div class="fw-card-label">Strategy</div><div class="fw-card-title">MECE Problem Tree</div><div class="fw-card-desc">Decompose AI product challenges without overlap. Separate model quality, data, UX, and adoption branches.</div></div>
+      <div class="fw-card"><div class="fw-card-label">Decision</div><div class="fw-card-title">Two-Way Door Test</div><div class="fw-card-desc">Classify AI decisions as reversible (two-way) or irreversible (one-way). Move fast on two-way; slow on one-way.</div></div>
+      <div class="fw-card"><div class="fw-card-label">Ethics</div><div class="fw-card-title">Consequence Scanning</div><div class="fw-card-desc">Assess intended, unintended, and potential harmful consequences of AI features before shipping.</div></div>
+      <div class="fw-card"><div class="fw-card-label">Build vs Buy</div><div class="fw-card-title">AI Stack Decision Matrix</div><div class="fw-card-desc">Score: differentiation value, data sensitivity, team capability, time-to-market, and long-term cost.</div></div>
+      <div class="fw-card"><div class="fw-card-label">Metrics</div><div class="fw-card-title">North Star Framework</div><div class="fw-card-desc">One metric that captures value delivery. For AI: tasks completed with AI assistance, AI-enabled time saved.</div></div>
+      <div class="fw-card"><div class="fw-card-label">UX</div><div class="fw-card-title">Uncertainty → Trust Ladder</div><div class="fw-card-desc">Five levels: aware → try → trust → rely → advocate. Design AI features to move users up each rung.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKLISTS -->
+<div id="section-checklists" class="section">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-tag">Launch Readiness</div>
+      <div class="section-title">Checklists</div>
+      <div class="section-sub">Work through these before shipping any AI feature or product.</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:2rem">
+
+    <div>
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--text);margin-bottom:0.8rem">🚦 Pre-Launch AI Feature</h3>
+      <div class="checklist-progress" id="prog1">0 / 10 complete</div>
+      <ul class="checklist" id="cl1">
+        <li onclick="toggleCheck(this,'cl1','prog1')"><div class="check-box"></div>Success criteria defined with measurable thresholds (precision, recall, or task completion rate)</li>
+        <li onclick="toggleCheck(this,'cl1','prog1')"><div class="check-box"></div>Edge cases catalogued: low-confidence outputs, out-of-distribution inputs, adversarial inputs</li>
+        <li onclick="toggleCheck(this,'cl1','prog1')"><div class="check-box"></div>Human fallback mechanism designed and tested for all failure modes</li>
+        <li onclick="toggleCheck(this,'cl1','prog1')"><div class="check-box"></div>Eval set of ≥100 representative examples with expected outputs created</li>
+        <li onclick="toggleCheck(this,'cl1','prog1')"><div class="check-box"></div>Bias and fairness audit completed across demographic dimensions</li>
+        <li onclick="toggleCheck(this,'cl1','prog1')"><div class="check-box"></div>Confidence scores and uncertainty shown in UI where applicable</li>
+        <li onclick="toggleCheck(this,'cl1','prog1')"><div class="check-box"></div>Data consent, privacy, and retention policy reviewed and documented</li>
+        <li onclick="toggleCheck(this,'cl1','prog1')"><div class="check-box"></div>Model card written and shared with stakeholders</li>
+        <li onclick="toggleCheck(this,'cl1','prog1')"><div class="check-box"></div>Rollback plan documented: feature flag ready, prior behavior preserved</li>
+        <li onclick="toggleCheck(this,'cl1','prog1')"><div class="check-box"></div>Monitoring and alerting live: quality drift, error rate, cost-per-request</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--text);margin-bottom:0.8rem">🧪 Experiment Design</h3>
+      <div class="checklist-progress" id="prog2">0 / 8 complete</div>
+      <ul class="checklist" id="cl2">
+        <li onclick="toggleCheck(this,'cl2','prog2')"><div class="check-box"></div>Clear hypothesis stated: "We believe X will cause Y for users who Z"</li>
+        <li onclick="toggleCheck(this,'cl2','prog2')"><div class="check-box"></div>Primary metric and guardrail metrics defined before test starts</li>
+        <li onclick="toggleCheck(this,'cl2','prog2')"><div class="check-box"></div>Sample size calculated for statistical significance at α=0.05, power=0.8</li>
+        <li onclick="toggleCheck(this,'cl2','prog2')"><div class="check-box"></div>Minimum detectable effect (MDE) defined and business-validated</li>
+        <li onclick="toggleCheck(this,'cl2','prog2')"><div class="check-box"></div>Holdout/control group isolation confirmed — no cross-contamination</li>
+        <li onclick="toggleCheck(this,'cl2','prog2')"><div class="check-box"></div>Novelty effect accounted for (minimum 2-week run for behavioral tests)</li>
+        <li onclick="toggleCheck(this,'cl2','prog2')"><div class="check-box"></div>Segment analysis plan defined: new vs returning, power vs casual users</li>
+        <li onclick="toggleCheck(this,'cl2','prog2')"><div class="check-box"></div>Decision rule pre-committed: conditions to ship, hold, or kill the variant</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--text);margin-bottom:0.8rem">⚖️ Responsible AI Review</h3>
+      <div class="checklist-progress" id="prog3">0 / 8 complete</div>
+      <ul class="checklist" id="cl3">
+        <li onclick="toggleCheck(this,'cl3','prog3')"><div class="check-box"></div>Consequence scan completed: intended, unintended, and harmful outcomes identified</li>
+        <li onclick="toggleCheck(this,'cl3','prog3')"><div class="check-box"></div>Training data provenance documented — sources, licenses, consent</li>
+        <li onclick="toggleCheck(this,'cl3','prog3')"><div class="check-box"></div>Disparate impact tested: performance parity across protected groups measured</li>
+        <li onclick="toggleCheck(this,'cl3','prog3')"><div class="check-box"></div>Red-team exercise conducted: adversarial prompts and misuse scenarios explored</li>
+        <li onclick="toggleCheck(this,'cl3','prog3')"><div class="check-box"></div>Users informed when they are interacting with AI (disclosure standard met)</li>
+        <li onclick="toggleCheck(this,'cl3','prog3')"><div class="check-box"></div>Right to opt-out or human review available for consequential AI decisions</li>
+        <li onclick="toggleCheck(this,'cl3','prog3')"><div class="check-box"></div>EU AI Act risk classification assessed (prohibited / high-risk / limited / minimal)</li>
+        <li onclick="toggleCheck(this,'cl3','prog3')"><div class="check-box"></div>Incident response plan defined for AI failures, bias discoveries, or misuse reports</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--text);margin-bottom:0.8rem">📊 Metrics & Observability</h3>
+      <div class="checklist-progress" id="prog4">0 / 7 complete</div>
+      <ul class="checklist" id="cl4">
+        <li onclick="toggleCheck(this,'cl4','prog4')"><div class="check-box"></div>North star metric defined and instrumented in analytics</li>
+        <li onclick="toggleCheck(this,'cl4','prog4')"><div class="check-box"></div>AI-specific metrics live: override rate, correction rate, AI adoption depth</li>
+        <li onclick="toggleCheck(this,'cl4','prog4')"><div class="check-box"></div>Quality monitoring: LLM-judge score or human sampling cadence set up</li>
+        <li onclick="toggleCheck(this,'cl4','prog4')"><div class="check-box"></div>Drift detection: data drift and model drift alerts configured</li>
+        <li onclick="toggleCheck(this,'cl4','prog4')"><div class="check-box"></div>Cost monitoring: cost-per-request tracked with budget alert thresholds</li>
+        <li onclick="toggleCheck(this,'cl4','prog4')"><div class="check-box"></div>Latency SLA set and p95 latency tracked in production</li>
+        <li onclick="toggleCheck(this,'cl4','prog4')"><div class="check-box"></div>Weekly review cadence scheduled for AI quality and product metrics</li>
+      </ul>
+    </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- TEMPLATES -->
+<div id="section-templates" class="section">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-tag">Ready to Use</div>
+      <div class="section-title">Templates</div>
+      <div class="section-sub">Copy-paste templates for the most common AI PM documents.</div>
+    </div>
+
+    <div style="display:grid;gap:2rem">
+
+    <div>
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--text);margin-bottom:1rem">📄 AI Feature PRD Template</h3>
+      <div class="template-block">
+        <h4>Header</h4>
+        <div class="field"><div class="key">Feature Name:</div><div class="val">[Name of the AI feature]</div></div>
+        <div class="field"><div class="key">PM Owner:</div><div class="val">[Name]</div></div>
+        <div class="field"><div class="key">ML Lead:</div><div class="val">[Name]</div></div>
+        <div class="field"><div class="key">Status:</div><div class="val">Draft / In Review / Approved</div></div>
+        <div class="field"><div class="key">Target Launch:</div><div class="val">[Quarter]</div></div>
+        <br>
+        <h4>Problem Statement</h4>
+        <div class="field"><div class="key">User Problem:</div><div class="val">Who has this problem, when, and what is the cost of not solving it?</div></div>
+        <div class="field"><div class="key">Business Goal:</div><div class="val">What metric does this move? By how much?</div></div>
+        <div class="field"><div class="key">AI Rationale:</div><div class="val">Why is AI the right approach? What non-AI alternatives were considered?</div></div>
+        <br>
+        <h4>ML Problem Formulation</h4>
+        <div class="field"><div class="key">Task Type:</div><div class="val">Classification / Generation / Retrieval / Regression / Ranking</div></div>
+        <div class="field"><div class="key">Input:</div><div class="val">[What goes in — data type, modality, source]</div></div>
+        <div class="field"><div class="key">Output:</div><div class="val">[What comes out — format, confidence, constraints]</div></div>
+        <div class="field"><div class="key">Training Signal:</div><div class="val">[Where does the labeling / feedback come from?]</div></div>
+        <br>
+        <h4>Success Criteria</h4>
+        <div class="field"><div class="key">Model Metric:</div><div class="val">e.g. Precision ≥ 0.85, Recall ≥ 0.80, Latency p95 ≤ 400ms</div></div>
+        <div class="field"><div class="key">Product Metric:</div><div class="val">e.g. AI task completion rate ≥ 70%, override rate ≤ 15%</div></div>
+        <div class="field"><div class="key">Business Metric:</div><div class="val">e.g. +5% retention, -20% support tickets</div></div>
+        <br>
+        <h4>Failure Modes & Mitigations</h4>
+        <div class="field"><div class="key">Known Failures:</div><div class="val">List top 5 failure modes with severity and frequency estimates</div></div>
+        <div class="field"><div class="key">Human Fallback:</div><div class="val">What happens when confidence < threshold?</div></div>
+        <div class="field"><div class="key">Edge Cases:</div><div class="val">OOD inputs, adversarial inputs, language/locale edge cases</div></div>
+        <br>
+        <h4>Data Requirements</h4>
+        <div class="field"><div class="key">Training Data:</div><div class="val">Source, size, quality, bias considerations</div></div>
+        <div class="field"><div class="key">Labeling Plan:</div><div class="val">Who labels, guidelines, inter-annotator agreement target</div></div>
+        <div class="field"><div class="key">Privacy & Consent:</div><div class="val">Data retention, PII handling, user consent mechanism</div></div>
+      </div>
+    </div>
+
+    <div>
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--text);margin-bottom:1rem">🃏 Model Card Template</h3>
+      <div class="template-block">
+        <div class="field"><div class="key">Model Name:</div><div class="val">[Identifier and version]</div></div>
+        <div class="field"><div class="key">Task:</div><div class="val">[What does this model do?]</div></div>
+        <div class="field"><div class="key">Intended Use:</div><div class="val">[Primary use cases]</div></div>
+        <div class="field"><div class="key">Out-of-Scope:</div><div class="val">[Explicitly what this model should NOT be used for]</div></div>
+        <div class="field"><div class="key">Training Data:</div><div class="val">[Source, date range, known gaps or biases]</div></div>
+        <div class="field"><div class="key">Performance:</div><div class="val">[Key metrics on overall and disaggregated test sets]</div></div>
+        <div class="field"><div class="key">Disparate Impact:</div><div class="val">[Performance across demographic groups — report gaps]</div></div>
+        <div class="field"><div class="key">Known Limitations:</div><div class="val">[Failure modes, robustness gaps, data drift risk]</div></div>
+        <div class="field"><div class="key">Monitoring:</div><div class="val">[What signals will detect degradation in production?]</div></div>
+        <div class="field"><div class="key">Contact:</div><div class="val">[PM and ML lead for questions or incidents]</div></div>
+      </div>
+    </div>
+
+    <div>
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--text);margin-bottom:1rem">🧪 Experiment Brief Template</h3>
+      <div class="template-block">
+        <div class="field"><div class="key">Name:</div><div class="val">[Experiment ID and descriptive name]</div></div>
+        <div class="field"><div class="key">Hypothesis:</div><div class="val">We believe [change] will cause [metric movement] for [user segment] because [rationale]</div></div>
+        <div class="field"><div class="key">Primary Metric:</div><div class="val">[Single metric to determine winner/loser]</div></div>
+        <div class="field"><div class="key">Guardrail Metrics:</div><div class="val">[Metrics that must not regress — e.g. latency, error rate]</div></div>
+        <div class="field"><div class="key">Variants:</div><div class="val">Control: [current state] / Treatment: [change being tested]</div></div>
+        <div class="field"><div class="key">Target Segment:</div><div class="val">[Who is in scope — eligibility criteria]</div></div>
+        <div class="field"><div class="key">Traffic Split:</div><div class="val">e.g. 50/50 or 90/10 for high-risk AI features</div></div>
+        <div class="field"><div class="key">Sample Size:</div><div class="val">[Calculated N per arm for target MDE]</div></div>
+        <div class="field"><div class="key">Run Duration:</div><div class="val">[Minimum weeks — must cover novelty period]</div></div>
+        <div class="field"><div class="key">Decision Rule:</div><div class="val">Ship if p-value < 0.05 AND primary metric lifts ≥ MDE AND all guardrails green</div></div>
+      </div>
+    </div>
+
+    <div>
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--text);margin-bottom:1rem">📊 AI Metrics Dashboard Template</h3>
+      <div class="metrics-table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Metric</th><th>What it Measures</th><th>Target</th><th>Alert Threshold</th><th>Owner</th></tr></thead>
+          <tbody>
+            <tr><td>AI Task Completion Rate</td><td>% sessions where AI helped user complete task</td><td>&gt;70%</td><td>Drop &gt;10% WoW</td><td>PM</td></tr>
+            <tr><td>AI Override Rate</td><td>% AI suggestions user rejected/corrected</td><td>&lt;15%</td><td>&gt;25%</td><td>PM+ML</td></tr>
+            <tr><td>AI Adoption Depth</td><td>% MAU using AI features ≥3x/week</td><td>&gt;40%</td><td>Drop &gt;5% MoM</td><td>PM</td></tr>
+            <tr><td>Quality Score</td><td>LLM-judge or human eval on sampled outputs</td><td>&gt;4.0/5</td><td>&lt;3.5/5</td><td>ML</td></tr>
+            <tr><td>p95 Latency</td><td>95th percentile response time (ms)</td><td>&lt;600ms</td><td>&gt;1200ms</td><td>Eng</td></tr>
+            <tr><td>Cost per AI Request</td><td>Total token + infra cost per AI call</td><td>Track trend</td><td>+30% WoW</td><td>PM+Eng</td></tr>
+            <tr><td>Error Rate</td><td>% AI calls returning errors or empty outputs</td><td>&lt;1%</td><td>&gt;3%</td><td>Eng</td></tr>
+            <tr><td>Data Drift (PSI)</td><td>Population stability index on input distribution</td><td>&lt;0.1</td><td>&gt;0.25</td><td>ML</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div id="section-about" class="section">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-tag">About This Guide</div>
+      <div class="section-title">How to Use</div>
+      <div class="section-sub">A living reference for AI Product Managers at every level.</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem">
+      <div class="about-card"><h3>🗂️ Browse Topics</h3><p>Use the navigation tabs to jump to a domain, or browse all 32 topics from "All Topics". Click any card to open the full deep-dive with frameworks, examples, and templates.</p></div>
+      <div class="about-card"><h3>✅ Before You Ship</h3><p>Head to Checklists and work through the pre-launch, experiment, and responsible AI reviews. Each item is clickable — track progress before every deploy.</p></div>
+      <div class="about-card"><h3>📋 Grab Templates</h3><p>The Templates tab has ready-to-copy PRD, model card, experiment brief, and metrics dashboard templates. Adapt them to your org's format.</p></div>
+      <div class="about-card"><h3>🛠️ Find Your Stack</h3><p>The Tools & Frameworks tab covers discovery, roadmapping, analytics, evaluation, and key decision frameworks for AI PMs in 2026.</p></div>
+      <div class="about-card"><h3>🔄 Living Document</h3><p>This guide covers AI PM fundamentals, responsible AI, EU AI Act, modern tooling (Langfuse, Braintrust, Statsig), and 2026 best practices. Built to stay current.</p></div>
+      <div class="about-card"><h3>🎯 Coverage Map</h3>
+        <p style="font-size:0.78rem;color:var(--text2)">
+          Strategy & Vision · 6 topics<br>
+          Discovery & Research · 5 topics<br>
+          Delivery & Execution · 6 topics<br>
+          Data, Metrics & Evaluation · 5 topics<br>
+          UX, Trust & Ethics · 5 topics<br>
+          AI PM Skills & Career · 5 topics
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PANEL OVERLAY -->
+<div class="panel-overlay" id="panelOverlay" onclick="closePanelOnBg(event)">
+  <div class="panel" id="panelContent">
+    <button class="panel-close" onclick="closePanel()">✕ Close</button>
+    <div id="panelInner"></div>
+  </div>
+</div>
+
+<script>
+// Tab switching
+function switchTab(tab) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('section-' + tab).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// Search
+function filterCards() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  document.querySelectorAll('#allCardsContainer .topic-card').forEach(card => {
+    const text = card.innerText.toLowerCase();
+    card.style.display = text.includes(q) ? '' : 'none';
+  });
+}
+
+// Checklist
+function toggleCheck(li, clId, progId) {
+  li.classList.toggle('checked');
+  if(li.classList.contains('checked')) li.querySelector('.check-box').textContent = '✓';
+  else li.querySelector('.check-box').textContent = '';
+  const cl = document.getElementById(clId);
+  const total = cl.querySelectorAll('li').length;
+  const done = cl.querySelectorAll('li.checked').length;
+  document.getElementById(progId).textContent = done + ' / ' + total + ' complete';
+}
+
+// Panel open/close
+function closePanel() {
+  document.getElementById('panelOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closePanelOnBg(e) {
+  if(e.target === document.getElementById('panelOverlay')) closePanel();
+}
+
+// Panel content database
+const panels = {
+  'ai-vision': {
+    tag:'Strategy',
+    title:'AI Product Vision & Strategy',
+    summary:'Vision defines where you\'re going. For AI products, it must anchor on user outcomes — not model capabilities. A great AI vision answers: who benefits, from what job being done better, enabled by what AI capability, and why this creates defensible value.',
+    content:`
+<h3>The AI Vision Stack</h3>
+<p>Your AI product vision lives at the intersection of three things: a user problem worth solving, an AI capability that uniquely solves it, and a business outcome that justifies the investment. Missing any one of them produces either a cool demo (no business), a solution looking for a problem (no user), or an AI that doesn't differentiate (no moat).</p>
+<div class="framework-grid">
+<div class="fw-card"><div class="fw-card-label">Layer 1</div><div class="fw-card-title">User Outcome</div><div class="fw-card-desc">"Users of [segment] will be able to [outcome] without [friction]"</div></div>
+<div class="fw-card"><div class="fw-card-label">Layer 2</div><div class="fw-card-title">AI Capability</div><div class="fw-card-desc">"Enabled by [model/system] that can [specific capability]"</div></div>
+<div class="fw-card"><div class="fw-card-label">Layer 3</div><div class="fw-card-title">Business Value</div><div class="fw-card-desc">"Which creates [retention / revenue / efficiency] advantage because [moat]"</div></div>
+</div>
+
+<h3>Writing a Good AI Vision Statement</h3>
+<p>A strong AI vision is testable. It should make it obvious what you'd build next, and what you'd say no to. Avoid vague terms like "intelligent", "seamless", or "AI-powered". Replace them with specific outcomes.</p>
+<div class="callout"><div class="callout-label">❌ Weak</div><p>"An intelligent platform that uses AI to help teams work better"</p></div>
+<div class="callout info"><div class="callout-label">✅ Strong</div><p>"Help enterprise finance teams close month-end in half the time by automatically detecting and resolving anomalies in GL data before they become escalations"</p></div>
+
+<h3>AI Strategy Frameworks</h3>
+<ul>
+<li><strong>Flywheel strategy:</strong> More users → more data → better model → more users. Identify the flywheel early and design every feature to spin it faster.</li>
+<li><strong>Capability-led vs problem-led:</strong> Most successful AI products start from a problem, then match a capability. Starting from "we have GPT-4" leads to features nobody asked for.</li>
+<li><strong>Moat analysis:</strong> Is your defensibility from data (hard to replicate), workflow integration (high switching cost), or model quality (temporary)? Only data and integration moats survive commoditization.</li>
+</ul>
+
+<h3>Setting OKRs for AI Products</h3>
+<table class="data-table"><thead><tr><th>Objective</th><th>Key Result</th><th>Type</th></tr></thead><tbody>
+<tr><td>Deliver AI value to users</td><td>AI task completion rate ≥ 70%</td><td>Product</td></tr>
+<tr><td>Build trust in AI output</td><td>Override rate drops to &lt; 15%</td><td>Quality</td></tr>
+<tr><td>Grow data flywheel</td><td>Labeled feedback volume +50% QoQ</td><td>Data</td></tr>
+<tr><td>Maintain responsible AI</td><td>Zero high-severity bias incidents</td><td>Safety</td></tr>
+</tbody></table>`
+  },
+  'market': {
+    tag:'Strategy',
+    title:'AI Market Analysis',
+    summary:'AI markets are uniquely volatile. Foundation model commoditization compresses margins. Competitive moats shift from model quality to data, distribution, and workflow depth. Standard TAM/SAM/SOM analysis needs AI-specific adjustments.',
+    content:`
+<h3>AI Market Sizing</h3>
+<p>Traditional TAM/SAM/SOM works, but needs AI-specific layers. The real question is not "how big is this market" but "how much of this market will AI-enabled solutions capture in the next 3 years, and what determines who captures it?"</p>
+
+<h3>The AI Competitive Moat Stack</h3>
+<div class="framework-grid">
+<div class="fw-card"><div class="fw-card-label">Weakest Moat</div><div class="fw-card-title">Model Quality</div><div class="fw-card-desc">Erodes in 6-18 months as competitors fine-tune or foundation models improve. Not a durable advantage.</div></div>
+<div class="fw-card"><div class="fw-card-label">Medium Moat</div><div class="fw-card-title">Workflow Integration</div><div class="fw-card-desc">Deep embedding in user workflows creates switching cost. Durable if the integration is genuinely sticky.</div></div>
+<div class="fw-card"><div class="fw-card-label">Strong Moat</div><div class="fw-card-title">Proprietary Data</div><div class="fw-card-desc">Unique training data competitors can't access. Gets stronger over time via data flywheel. Most durable.</div></div>
+<div class="fw-card"><div class="fw-card-label">Strong Moat</div><div class="fw-card-title">Network Effects</div><div class="fw-card-desc">Value increases as more users join (e.g. collaborative AI tools, shared knowledge bases).</div></div>
+</div>
+
+<h3>Competitive Analysis for AI Products</h3>
+<ul>
+<li><strong>Track capability parity:</strong> When will competitors match your key AI capability? Plan your roadmap assuming 12-month advantage at most.</li>
+<li><strong>Model commoditization risk:</strong> If your differentiation is purely from a foundation model (OpenAI, Anthropic), that advantage disappears when competitors access the same model.</li>
+<li><strong>Build vs Buy risk:</strong> Enterprise customers can build basic AI features in-house. Your value must be deep enough that building is worse than buying.</li>
+</ul>
+
+<h3>AI Market Sizing Formula</h3>
+<div class="code-block"><span class="cm"># AI Product TAM Calculation</span>
+TAM = Total addressable users × Willingness to pay for AI features
+SAM = TAM × % reachable with your distribution
+SOM = SAM × % you can realistically capture in 3 years
+
+<span class="cm"># AI-specific adjustment: discount for AI skepticism</span>
+Effective TAM = TAM × AI adoption rate in segment (~30-70% depending on industry)
+</div>`
+  },
+  'roadmap': {
+    tag:'Strategy',
+    title:'AI Product Roadmapping',
+    summary:'AI roadmaps must account for three unique dynamics: model capability evolution is non-linear, data flywheels take time to spin up, and responsible AI milestones are non-negotiable gates. Static feature lists don\'t capture this.',
+    content:`
+<h3>The AI Roadmap Layers</h3>
+<p>A good AI roadmap has three layers that evolve at different speeds:</p>
+<ul>
+<li><strong>Data layer:</strong> Collection, labeling, and flywheel infrastructure. Moves slowly, must start early.</li>
+<li><strong>Model layer:</strong> Capabilities, fine-tuning, eval benchmarks. Moves in research sprints.</li>
+<li><strong>Product layer:</strong> UX, features, integrations. Moves in product sprints.</li>
+</ul>
+
+<h3>AI Roadmap Timeline Pattern</h3>
+<div class="timeline">
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-label">Month 1-2</div><div class="tl-title">Foundation</div><div class="tl-desc">Data audit, eval set creation, baseline model benchmarking, responsible AI review. Non-negotiable before any feature work.</div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-label">Month 3-4</div><div class="tl-title">MVP Capability</div><div class="tl-desc">First AI feature in production. Shadow mode or limited beta. Feedback collection instrumented. No wide launch.</div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-label">Month 5-6</div><div class="tl-title">Trust Building</div><div class="tl-desc">Iterate on quality, add confidence indicators, refine human fallback. Launch to broader audience once override rate is acceptable.</div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-label">Month 7-12</div><div class="tl-title">Flywheel Activation</div><div class="tl-desc">Data flywheel spinning. Fine-tuning on production feedback. Model quality compounds. Begin roadmapping next capability tier.</div></div>
+<div class="tl-item"><div class="tl-dot" style="background:var(--green)"></div><div class="tl-label">Month 12+</div><div class="tl-title">Competitive Moat</div><div class="tl-desc">Proprietary data advantage established. Model quality pulls ahead. Begin defensibility investments.</div></div>
+</div>
+
+<h3>Responsible AI Gates on the Roadmap</h3>
+<div class="callout info"><div class="callout-label">Gate Policy</div><p>Every feature that uses AI in a consequential decision (credit, healthcare, hiring, legal) must pass bias audit, disparate impact test, and explainability review before progressing to beta. Non-negotiable.</p></div>
+
+<h3>Roadmap Communication to Stakeholders</h3>
+<p>Use the Now / Next / Later format. For AI specifically: Now = current model capabilities + features, Next = capabilities we're confident we can build in 2 quarters, Later = capabilities dependent on data maturity or model breakthroughs. Never commit model improvement timelines to business stakeholders — commit product outcome milestones instead.</p>`
+  },
+  'biz-model': {
+    tag:'Strategy',
+    title:'AI Business Models',
+    summary:'AI changes the unit economics of software. Inference costs are real. Usage-based pricing unlocks value alignment but compresses margins. Outcome-based pricing is the premium tier but requires rigorous measurement.',
+    content:`
+<h3>AI Pricing Models</h3>
+<table class="data-table"><thead><tr><th>Model</th><th>Best For</th><th>AI Risk</th><th>Example</th></tr></thead><tbody>
+<tr><td>Flat SaaS</td><td>Mature AI features, enterprise</td><td>Underprices high-usage customers</td><td>Grammarly Business</td></tr>
+<tr><td>Usage-Based</td><td>API, infrastructure, Gen AI tools</td><td>Revenue unpredictability; cost exposure</td><td>OpenAI API</td></tr>
+<tr><td>Outcome-Based</td><td>High-value enterprise AI</td><td>Measurement complexity</td><td>AI revenue forecasting tools</td></tr>
+<tr><td>Seat + AI Credits</td><td>Hybrid: base + overage</td><td>User confusion, negotiation friction</td><td>Salesforce Einstein</td></tr>
+</tbody></table>
+
+<h3>AI Unit Economics</h3>
+<div class="code-block"><span class="cm"># AI Feature Gross Margin Formula</span>
+Revenue per user (monthly)        $20.00
+- Inference cost per user           $2.50  <span class="cm"># LLM + embedding + vector DB</span>
+- Labeling / RLHF cost (amort)      $0.50
+- Monitoring / infra cost           $0.30
+= AI Gross Margin per user         $16.70  <span class="cm"># 83.5% — good for SaaS AI</span>
+
+<span class="cm"># Warning: inference scales with usage, not seats</span>
+<span class="cm"># A 10x usage spike = 10x inference cost</span>
+</div>
+
+<h3>Cost Optimization Levers</h3>
+<ul>
+<li><strong>Model routing:</strong> Use cheap models for simple tasks, expensive models for complex ones. Can reduce cost 60-80%.</li>
+<li><strong>Caching:</strong> Cache repeated inputs (system prompts, common queries). Cache hit rates of 60%+ are achievable.</li>
+<li><strong>Batch processing:</strong> Non-realtime workloads can use batch APIs at 50% cost.</li>
+<li><strong>Context compression:</strong> Shorter prompts = lower cost. Compress retrieved context before insertion.</li>
+</ul>`
+  },
+  'prioritization': {
+    tag:'Strategy',
+    title:'AI Feature Prioritization',
+    summary:'Standard prioritization frameworks need AI-specific adaptations. Accuracy improvements compete with new features. Safety work is non-optional but hard to score. Data investments have delayed payoffs.',
+    content:`
+<h3>RICE for AI Features</h3>
+<p><strong>RICE = (Reach × Impact × Confidence) ÷ Effort</strong></p>
+<p>AI-specific additions:</p>
+<ul>
+<li><strong>Accuracy delta multiplier:</strong> For model improvement work, multiply Impact by the expected accuracy improvement percentage.</li>
+<li><strong>Data dependency discount:</strong> If a feature requires new data collection, reduce Confidence by 20-30%.</li>
+<li><strong>Safety tax:</strong> Add responsible AI review time to Effort for any consequential AI feature.</li>
+</ul>
+
+<h3>AI Feature Priority Categories</h3>
+<div class="framework-grid">
+<div class="fw-card"><div class="fw-card-label" style="color:var(--red)">Must Do</div><div class="fw-card-title">Safety & Quality</div><div class="fw-card-desc">Bias issues, hallucination fixes, harmful output guardrails. Non-negotiable regardless of RICE score.</div></div>
+<div class="fw-card"><div class="fw-card-label" style="color:var(--accent)">Should Do</div><div class="fw-card-title">Trust Builders</div><div class="fw-card-desc">Confidence indicators, explanation UI, override flows. Compound user trust over time.</div></div>
+<div class="fw-card"><div class="fw-card-label" style="color:var(--green)">Nice to Have</div><div class="fw-card-title">Wow Features</div><div class="fw-card-desc">Impressive capabilities that drive acquisition but don't need to be perfect at launch.</div></div>
+<div class="fw-card"><div class="fw-card-label" style="color:var(--text3)">Defer</div><div class="fw-card-title">Data Investments</div><div class="fw-card-desc">Long-horizon data flywheel work. Important but payoff is quarters away — plan but don't crowd out now work.</div></div>
+</div>
+
+<h3>The Accuracy vs Feature Tradeoff</h3>
+<div class="callout"><div class="callout-label">Rule of Thumb</div><p>If your core AI accuracy is below your "trust threshold" (the level where users stop overriding), prioritize model quality over new features. A faster car with no steering wheel is still not useful.</p></div>`
+  },
+  'build-buy': {
+    tag:'Strategy',
+    title:'Build vs Buy vs Partner',
+    summary:'Most AI products today are built on foundation models. The strategic question is: where in the stack do you differentiate, and where do you commoditize? The answer determines your team, your cost structure, and your moat.',
+    content:`
+<h3>The AI Stack Decision</h3>
+<table class="data-table"><thead><tr><th>Layer</th><th>Build</th><th>Buy / API</th><th>Partner</th></tr></thead><tbody>
+<tr><td>Foundation Model</td><td>Only for frontier labs</td><td>OpenAI, Anthropic, Google</td><td>Fine-tune on partner model</td></tr>
+<tr><td>Orchestration</td><td>Custom agents for differentiating workflows</td><td>LangChain, LlamaIndex</td><td>-</td></tr>
+<tr><td>Retrieval / RAG</td><td>Custom chunking for domain data</td><td>Pinecone, Weaviate</td><td>-</td></tr>
+<tr><td>Eval & Safety</td><td>Domain-specific eval sets</td><td>Braintrust, Patronus</td><td>-</td></tr>
+<tr><td>UX</td><td>Always — this is your differentiation</td><td>Component libs</td><td>-</td></tr>
+</tbody></table>
+
+<h3>Decision Framework</h3>
+<ul>
+<li><strong>Differentiation value:</strong> Does this capability create competitive differentiation? If yes, build or deeply customize. If no, buy.</li>
+<li><strong>Data sensitivity:</strong> If processing sensitive customer data, self-hosting or private deployments may be required.</li>
+<li><strong>Team capability:</strong> Do you have ML engineers who can build and maintain this? If not, buy.</li>
+<li><strong>Vendor lock-in risk:</strong> What happens if the API provider changes pricing or terms? Ensure abstraction layers exist.</li>
+</ul>
+
+<h3>Fine-Tuning vs Prompting vs RAG</h3>
+<div class="framework-grid">
+<div class="fw-card"><div class="fw-card-label">Prompting</div><div class="fw-card-title">When to Use</div><div class="fw-card-desc">Task is well-defined, examples can fit in context, and you need fast iteration. Start here always.</div></div>
+<div class="fw-card"><div class="fw-card-label">RAG</div><div class="fw-card-title">When to Use</div><div class="fw-card-desc">Knowledge is too large for context window, or needs to be updated frequently without retraining.</div></div>
+<div class="fw-card"><div class="fw-card-label">Fine-Tuning</div><div class="fw-card-title">When to Use</div><div class="fw-card-desc">Style/tone adaptation, domain-specific format, cost reduction at scale, or when prompting has plateaued.</div></div>
+</div>`
+  },
+  'user-research': {
+    tag:'Discovery',
+    title:'AI User Research',
+    summary:'AI products require research methods that surface trust dynamics, mental models about AI capabilities, and the gap between users\' expectations and actual model behavior. Standard usability research is necessary but not sufficient.',
+    content:`
+<h3>AI-Specific Research Methods</h3>
+<ul>
+<li><strong>Mental model interviews:</strong> Ask "When the AI gives you a suggestion, what do you think is happening inside?" before showing anything. Surface beliefs, not reactions.</li>
+<li><strong>Trust calibration sessions:</strong> Show AI outputs — some correct, some wrong — and observe how users decide when to trust. Where do they apply critical thinking? Where do they over-trust?</li>
+<li><strong>AI anxiety mapping:</strong> Interview users about fears: job displacement, privacy, being wrong because of AI. Understanding anxiety predicts adoption resistance better than task completion tests.</li>
+<li><strong>Wizard of Oz testing:</strong> Before building AI, have a human act as the AI in a live session. Tests value of the capability without ML investment.</li>
+<li><strong>Longitudinal studies:</strong> AI trust changes over time. One-time tests don't capture the novelty-to-reliance arc. Run diary studies over 2-4 weeks for consequential AI features.</li>
+</ul>
+
+<h3>Interview Questions for AI Research</h3>
+<div class="code-block"><span class="kw">Trust & Mental Models</span>
+"What would make you trust an AI suggestion in this task?"
+"Have you ever been burned by an AI tool? What happened?"
+"How would you verify an AI recommendation before acting on it?"
+
+<span class="kw">Adoption & Anxiety</span>
+"What worries you about AI being involved in [task]?"
+"What would need to be true for you to fully rely on AI for this?"
+"Who else in your workflow would this affect?"
+
+<span class="kw">Behavior & Expectations</span>
+"What do you expect the AI to be good at? Bad at?"
+"When would you override an AI suggestion?"
+"How transparent do you want the AI to be about its reasoning?"</div>
+
+<h3>Research Anti-Patterns for AI</h3>
+<div class="callout"><div class="callout-label">⚠️ Avoid</div><p>Don't lead with demos of impressive AI capabilities and ask "would you use this?" — users almost always say yes. Instead, test with realistic failure cases and edge cases. You learn more from how people handle errors than successes.</p></div>`
+  },
+  'prd': {
+    tag:'Delivery',
+    title:'AI PRD Writing',
+    summary:'An AI PRD must do what a standard PRD does — scope, success criteria, requirements — plus specify the ML problem, evaluation criteria, edge cases, failure modes, data requirements, and human fallback design. It\'s both a product spec and a model brief.',
+    content:`
+<h3>What Makes AI PRDs Different</h3>
+<p>Standard PRDs specify features in deterministic terms: "When user clicks X, Y happens." AI PRDs must account for probabilistic outputs: "When user asks X, the model will probably return Y, and here's what happens if it returns Z instead."</p>
+
+<h3>Key Sections in an AI PRD</h3>
+<ul>
+<li><strong>ML Problem Formulation:</strong> Classify the ML task (classification/regression/generation/retrieval). Define inputs, outputs, and training signal. This section bridges product intent to ML implementation.</li>
+<li><strong>Success Criteria:</strong> Two tiers — model metrics (precision, recall, latency) and product metrics (task completion, override rate). Both must be specified before any ML work begins.</li>
+<li><strong>Edge Case Catalog:</strong> List the top 10 inputs the model is likely to handle poorly. For each: probability, severity, and mitigation. This is often the most important section.</li>
+<li><strong>Failure Mode Design:</strong> For each major failure mode, specify the UX: what does the user see? What fallback is offered? Is a human escalation path available?</li>
+<li><strong>Data Requirements:</strong> Source, size, quality targets, labeling guidelines, annotation interface requirements, and inter-annotator agreement targets.</li>
+</ul>
+<div class="callout info"><div class="callout-label">Best Practice</div><p>Write the eval set before writing the requirements. If you can't describe 50 examples of success and failure, you haven't understood the problem well enough to spec it.</p></div>`
+  },
+  'north-star': {
+    tag:'Metrics',
+    title:'North Star & AI Metrics',
+    summary:'AI products need a metric hierarchy that captures both value delivery (is the AI helping users?) and quality (is the AI reliable?). Most product metrics miss the trust and adoption dimensions unique to AI.',
+    content:`
+<h3>The AI Metrics Hierarchy</h3>
+<div class="framework-grid">
+<div class="fw-card"><div class="fw-card-label">North Star</div><div class="fw-card-title">AI-Assisted Value</div><div class="fw-card-desc">The single metric that best captures AI value delivery. Example: "Tasks completed with AI assistance per active user per week"</div></div>
+<div class="fw-card"><div class="fw-card-label">Trust Metrics</div><div class="fw-card-title">Override Rate</div><div class="fw-card-desc">% of AI suggestions user rejected or corrected. High override rate = low trust or low quality. Target: &lt;15%</div></div>
+<div class="fw-card"><div class="fw-card-label">Adoption Metrics</div><div class="fw-card-title">AI Depth</div><div class="fw-card-desc">% of MAU using AI features ≥3x/week. Measures whether AI is core workflow vs occasional novelty.</div></div>
+<div class="fw-card"><div class="fw-card-label">Quality Metrics</div><div class="fw-card-title">Quality Score</div><div class="fw-card-desc">LLM-judge or human eval on sampled outputs. Track weekly for regression detection. Target: &gt;4.0/5</div></div>
+</div>
+
+<h3>Full AI Metrics Reference</h3>
+<div class="metrics-table-wrap"><table class="data-table"><thead><tr><th>Metric</th><th>Measures</th><th>Target</th></tr></thead><tbody>
+<tr><td>AI Task Completion Rate</td><td>% sessions where AI helped complete the core job</td><td>&gt;70%</td></tr>
+<tr><td>Override Rate</td><td>% AI outputs user rejected</td><td>&lt;15%</td></tr>
+<tr><td>AI Adoption Depth</td><td>% MAU using AI features ≥3x/week</td><td>&gt;40%</td></tr>
+<tr><td>Correction Rate</td><td>% outputs user manually corrected</td><td>&lt;10%</td></tr>
+<tr><td>AI NPS</td><td>Would you recommend this AI feature?</td><td>&gt;40</td></tr>
+<tr><td>Time-to-Value with AI</td><td>Time from task start to completion with AI vs without</td><td>30%+ faster</td></tr>
+<tr><td>AI Abandonment Rate</td><td>% users who start an AI-assisted task then revert to manual</td><td>&lt;5%</td></tr>
+<tr><td>Human Escalation Rate</td><td>% AI tasks routed to human review</td><td>Track by feature</td></tr>
+</tbody></table></div>`
+  },
+  'ai-ux': {
+    tag:'UX & Ethics',
+    title:'AI UX Patterns',
+    summary:'AI UX has a unique design challenge: outputs are probabilistic, can be wrong, and users have wildly varying expectations. Good AI UX builds calibrated trust — not blind trust, not zero trust — by making the AI\'s confidence, reasoning, and limitations legible.',
+    content:`
+<h3>Core AI UX Patterns</h3>
+<ul>
+<li><strong>Confidence indicators:</strong> Show users how confident the AI is. Use visual cues (color, shading, "Likely" vs "Possible" labels) not raw numbers. Users can't interpret 0.73 probability.</li>
+<li><strong>Progressive disclosure:</strong> Start with the AI's recommendation, let users drill into reasoning on demand. Don't default to showing all reasoning — it overwhelms.</li>
+<li><strong>Graceful degradation:</strong> When confidence is below threshold, the AI should acknowledge it rather than hallucinate confidently. Design the low-confidence state explicitly.</li>
+<li><strong>Correction affordances:</strong> Make it easy to correct AI outputs. Every correction is a training signal. Design the correction UX as carefully as the primary interaction.</li>
+<li><strong>Undo and safety nets:</strong> AI actions that are hard to reverse must have explicit confirmation. Never let AI auto-execute irreversible actions.</li>
+</ul>
+
+<h3>The Trust Ladder</h3>
+<div class="timeline">
+<div class="tl-item"><div class="tl-dot" style="background:var(--text3)"></div><div class="tl-label">Level 1</div><div class="tl-title">Aware</div><div class="tl-desc">User knows AI exists in the product. Design goal: exposure without forcing.</div></div>
+<div class="tl-item"><div class="tl-dot" style="background:var(--accent)"></div><div class="tl-label">Level 2</div><div class="tl-title">Try</div><div class="tl-desc">User attempts AI features. Design goal: low-friction, reversible first use.</div></div>
+<div class="tl-item"><div class="tl-dot" style="background:var(--accent2)"></div><div class="tl-label">Level 3</div><div class="tl-title">Trust</div><div class="tl-desc">User accepts AI output without checking every time. Design goal: consistent quality, clear failure signals.</div></div>
+<div class="tl-item"><div class="tl-dot" style="background:var(--green)"></div><div class="tl-label">Level 4</div><div class="tl-title">Rely</div><div class="tl-desc">User's workflow depends on AI. Design goal: reliability, speed, depth of integration.</div></div>
+<div class="tl-item"><div class="tl-dot" style="background:var(--purple)"></div><div class="tl-label">Level 5</div><div class="tl-title">Advocate</div><div class="tl-desc">User recommends to others. Design goal: delight moments, share-worthy outputs.</div></div>
+</div>`
+  },
+  'responsible-ai': {
+    tag:'Ethics',
+    title:'Responsible AI',
+    summary:'Responsible AI is not a compliance checkbox — it\'s a product discipline. Shipped AI that harms users or produces biased outcomes destroys trust faster than any bug. Build responsible AI review into your definition of done.',
+    content:`
+<h3>The Responsible AI PM Checklist</h3>
+<ul>
+<li><strong>Bias audit:</strong> Test model performance across demographic groups. Use disaggregated metrics — overall accuracy can hide severe underperformance for subgroups.</li>
+<li><strong>Consequence scan:</strong> Before launch, explicitly identify who could be harmed and how. Intended benefits, unintended side effects, and potential misuse vectors.</li>
+<li><strong>Red-teaming:</strong> Adversarial testing by a team whose job is to break the system. Include prompt injection, jailbreaking attempts, and off-distribution edge cases.</li>
+<li><strong>Disparate impact testing:</strong> For consequential decisions (credit, hiring, content moderation), measure if error rates differ across protected groups. Acceptable thresholds vary by domain.</li>
+<li><strong>AI disclosure:</strong> Users in consequential interactions must know they're interacting with AI. This is both ethical and increasingly regulated (EU AI Act, FTC guidelines).</li>
+</ul>
+
+<h3>EU AI Act Risk Classification</h3>
+<table class="data-table"><thead><tr><th>Category</th><th>Examples</th><th>Obligations</th></tr></thead><tbody>
+<tr><td><span class="badge badge-red">Prohibited</span></td><td>Social scoring, real-time mass biometric surveillance</td><td>Cannot be deployed in EU</td></tr>
+<tr><td><span class="badge badge-amber">High-Risk</span></td><td>Hiring AI, credit scoring, education, medical</td><td>Conformity assessment, data governance, human oversight required</td></tr>
+<tr><td><span class="badge badge-purple">Limited Risk</span></td><td>Chatbots, deepfakes</td><td>Transparency obligations — disclose AI to users</td></tr>
+<tr><td><span class="badge badge-green">Minimal Risk</span></td><td>Spam filters, AI in games</td><td>No mandatory requirements</td></tr>
+</tbody></table>
+
+<div class="callout info"><div class="callout-label">PM Action</div><p>Classify your AI features by EU AI Act risk level at the start of every product cycle. High-risk classification adds mandatory human oversight, data governance, and documentation requirements — these must be on the roadmap, not discovered at audit time.</p></div>`
+  },
+  'tech-fluency': {
+    tag:'Skills',
+    title:'Technical Fluency for AI PMs',
+    summary:'You don\'t need to write ML code. You need to understand what\'s easy vs hard for a model, how to interpret metrics, and when your ML team is making tradeoffs that affect product quality. This is the baseline technical vocabulary.',
+    content:`
+<h3>Must-Know ML Concepts</h3>
+<table class="data-table"><thead><tr><th>Concept</th><th>What It Means for PMs</th></tr></thead><tbody>
+<tr><td>Embeddings</td><td>How text/images are represented as numbers for similarity search. Core to search, recommendations, and RAG. Know that embedding quality determines retrieval quality.</td></tr>
+<tr><td>Transformer / LLM</td><td>Foundation of modern AI. Know that LLMs predict the next token — they don't "think" — which explains hallucinations, stochastic outputs, and prompt sensitivity.</td></tr>
+<tr><td>Fine-tuning</td><td>Adapting a pre-trained model on domain data. Improves style and format compliance; doesn't reliably add new factual knowledge. Has a data, cost, and maintenance overhead.</td></tr>
+<tr><td>RAG</td><td>Retrieval-Augmented Generation. Injecting retrieved documents into the prompt. The best way to ground LLMs in fresh or proprietary knowledge without retraining.</td></tr>
+<tr><td>Context window</td><td>How much text the model can "see" at once. Bigger windows = more expensive. Long context doesn't equal perfect memory — models attend imperfectly to long contexts.</td></tr>
+<tr><td>Temperature</td><td>Controls randomness. Temperature 0 = deterministic and repetitive. Temperature 1 = creative and unpredictable. Most production tasks use 0.2-0.7.</td></tr>
+<tr><td>Precision / Recall</td><td>Precision: of what the model flagged, how much was right? Recall: of everything that should have been flagged, how much did it catch? Tradeoff shapes product experience.</td></tr>
+<tr><td>Hallucination</td><td>Model generates plausible-sounding but factually incorrect content. Not a bug — it's a feature of how LLMs work. Must be mitigated by grounding (RAG), verification, and UX design.</td></tr>
+</tbody></table>
+
+<h3>Questions Every AI PM Should Ask Their ML Team</h3>
+<ul>
+<li>"What are the top failure modes of this model, and how often do they occur?"</li>
+<li>"What does the performance look like disaggregated by user segment / input type?"</li>
+<li>"How will we know if quality degrades in production? What's the leading indicator?"</li>
+<li>"What training data is this trained on? What biases might it have inherited?"</li>
+<li>"What's the cost-quality tradeoff? Is there a cheaper model that gets 90% of the quality?"</li>
+</ul>`
+  },
+  'exp-design': {
+    tag:'Delivery',
+    title:'Experiment Design',
+    summary:'AI experiments are harder than standard A/B tests. Model improvements don\'t always translate to metric improvements. Novelty effects are real. Shadow mode is often the right first step before any live experiment.',
+    content:`
+<h3>AI Experimentation Ladder</h3>
+<div class="timeline">
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-label">Step 1</div><div class="tl-title">Offline Eval</div><div class="tl-desc">Test on golden set before any users see it. Gate: model metric must meet threshold.</div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-label">Step 2</div><div class="tl-title">Shadow Mode</div><div class="tl-desc">Model runs in production but outputs are not shown to users. Log outputs, compare to current behavior. Gate: failure rate acceptable.</div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-label">Step 3</div><div class="tl-title">Canary / 1%</div><div class="tl-desc">Show to tiny fraction of real users. Monitor product metrics closely. Gate: no guardrail regressions.</div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-label">Step 4</div><div class="tl-title">A/B Test</div><div class="tl-desc">Proper controlled experiment with statistically sufficient sample. Gate: primary metric lifts, guardrails hold.</div></div>
+<div class="tl-item"><div class="tl-dot" style="background:var(--green)"></div><div class="tl-label">Step 5</div><div class="tl-title">Full Rollout</div><div class="tl-desc">Ship to 100%. Maintain holdout group for 30 days for long-term effect validation.</div></div>
+</div>
+
+<h3>Novelty Effect in AI</h3>
+<div class="callout"><div class="callout-label">⚠️ Watch Out</div><p>AI features often show a spike in engagement in the first 1-2 weeks purely because they're new and interesting. Run behavioral experiments for a minimum of 2 weeks, and validate that engagement is sustained — not just novelty-driven.</p></div>
+
+<h3>Champion-Challenger for AI</h3>
+<p>When testing model improvements, always run the incumbent model alongside the challenger in live traffic. Route a small % to challenger (10-20%). Compare quality scores, user metrics, and cost simultaneously. The "champion" is not just the model with better offline metrics — it's the one that delivers better product outcomes at acceptable cost.</p>`
+  },
+  'problem-framing': {
+    tag:'Discovery',
+    title:'Problem Framing for AI',
+    summary:'The most common PM mistake in AI is jumping to the model before understanding the problem. "We should use AI" is not a problem statement. Before any ML work, you need to define the task type, the inputs, the outputs, and what good looks like.',
+    content:`
+<h3>The AI Problem Framing Canvas</h3>
+<div class="template-block">
+<div class="field"><div class="key">Business Problem:</div><div class="val">What outcome does the business need?</div></div>
+<div class="field"><div class="key">User Job:</div><div class="val">What task is the user trying to accomplish?</div></div>
+<div class="field"><div class="key">Current Solution:</div><div class="val">How is this done today? What's the pain?</div></div>
+<div class="field"><div class="key">AI Hypothesis:</div><div class="val">How specifically would AI improve this?</div></div>
+<div class="field"><div class="key">ML Task Type:</div><div class="val">Classification / Regression / Generation / Retrieval / Ranking</div></div>
+<div class="field"><div class="key">Input:</div><div class="val">What data goes in? Source, format, quality?</div></div>
+<div class="field"><div class="key">Output:</div><div class="val">What does success look like? Label, text, score?</div></div>
+<div class="field"><div class="key">Training Signal:</div><div class="val">How will the model learn what's good?</div></div>
+<div class="field"><div class="key">Non-AI Alternative:</div><div class="val">What rules/heuristics could approximate this?</div></div>
+<div class="field"><div class="key">Min Viable Accuracy:</div><div class="val">Below what accuracy threshold would users not adopt this?</div></div>
+</div>
+
+<h3>ML Task Type Selector</h3>
+<table class="data-table"><thead><tr><th>If you want to...</th><th>ML Task</th><th>Example</th></tr></thead><tbody>
+<tr><td>Assign a category to input</td><td>Classification</td><td>Ticket routing, sentiment, spam detection</td></tr>
+<tr><td>Predict a number</td><td>Regression</td><td>Churn probability, estimated time, revenue forecast</td></tr>
+<tr><td>Generate text, code, or content</td><td>Generation (LLM)</td><td>Drafting emails, code completion, summarization</td></tr>
+<tr><td>Find the most relevant items</td><td>Retrieval / Ranking</td><td>Search, recommendations, FAQ matching</td></tr>
+<tr><td>Extract structure from unstructured text</td><td>NLP/Extraction</td><td>Named entity recognition, form parsing</td></tr>
+</tbody></table>`
+  },
+  'eval-framework': {
+    tag:'Metrics',
+    title:'Evaluation Frameworks',
+    summary:'Evals are to AI what unit tests are to software. But unlike tests, evals deal with probabilistic outputs — there\'s rarely a single right answer. Building a rigorous eval framework is one of the highest-leverage investments an AI PM can make.',
+    content:`
+<h3>Eval Types</h3>
+<table class="data-table"><thead><tr><th>Type</th><th>What It Tests</th><th>When to Use</th></tr></thead><tbody>
+<tr><td>Golden Set Evals</td><td>Model performance on curated test cases with expected outputs</td><td>Before every model change. Regression detection.</td></tr>
+<tr><td>LLM-as-Judge</td><td>Another LLM scores output quality, relevance, or safety</td><td>Scalable quality monitoring at production volume</td></tr>
+<tr><td>Human Evals</td><td>Annotators score output quality on defined rubric</td><td>Calibrating LLM judge, new task setup, high-stakes features</td></tr>
+<tr><td>A/B Evals</td><td>Side-by-side human preference between model versions</td><td>Comparing model candidates before deployment</td></tr>
+<tr><td>Adversarial Evals</td><td>Specifically crafted inputs to test failure modes</td><td>Safety testing, red-teaming, edge case coverage</td></tr>
+</tbody></table>
+
+<h3>Building a Golden Set</h3>
+<ul>
+<li>Minimum 100 examples for initial eval set; 500+ for production regression suite</li>
+<li>Include: typical cases (60%), edge cases (25%), adversarial cases (15%)</li>
+<li>Each example needs: input, expected output, and scoring rubric</li>
+<li>Review and refresh quarterly — golden sets become stale as product evolves</li>
+</ul>
+
+<h3>Eval-Driven Development for PMs</h3>
+<div class="callout info"><div class="callout-label">Process</div><p>Write the eval set before writing the PRD. If your team can't agree on 50 examples of good vs bad outputs, you haven't understood the problem well enough to spec it. Eval-first forces clarity on success criteria that prose requirements never achieve.</p></div>`
+  },
+  'data-strategy': {
+    tag:'Metrics',
+    title:'Data Strategy',
+    summary:'Data is the most durable competitive moat in AI. A strong data strategy defines what data you need, how you collect it, how you label it, and how it compounds over time through feedback loops.',
+    content:`
+<h3>The Data Flywheel</h3>
+<div class="framework-grid">
+<div class="fw-card"><div class="fw-card-label">Step 1</div><div class="fw-card-title">Launch AI Feature</div><div class="fw-card-desc">Even with an imperfect model. You need users to generate signal.</div></div>
+<div class="fw-card"><div class="fw-card-label">Step 2</div><div class="fw-card-title">Collect Feedback</div><div class="fw-card-desc">Explicit (thumbs up/down) and implicit (corrections, abandonment, time on output).</div></div>
+<div class="fw-card"><div class="fw-card-label">Step 3</div><div class="fw-card-title">Label & Train</div><div class="fw-card-desc">Convert feedback into training signal. Fine-tune or RLHF to improve model.</div></div>
+<div class="fw-card"><div class="fw-card-label">Step 4</div><div class="fw-card-title">Better Model</div><div class="fw-card-desc">Higher quality → more usage → more feedback → better data. Flywheel spins.</div></div>
+</div>
+
+<h3>Data Strategy Checklist</h3>
+<ul>
+<li><strong>Data provenance:</strong> Where does training data come from? Is it licensed? Consent obtained?</li>
+<li><strong>Labeling pipeline:</strong> Who labels? Internal team vs external annotators? Quality control process?</li>
+<li><strong>Feedback instrumentation:</strong> What signals does the product surface? Are they clean enough to use for training?</li>
+<li><strong>Data moat assessment:</strong> What data do you have that competitors can't easily replicate? This is your strategic data asset.</li>
+<li><strong>Privacy architecture:</strong> Can you use customer data for training? What consent and opt-out mechanisms are required?</li>
+</ul>`
+  },
+  'observability': {
+    tag:'Metrics',
+    title:'AI Product Observability',
+    summary:'AI products fail silently. A model can degrade over weeks without throwing errors — outputs just get gradually worse. Production observability for AI requires monitoring quality, not just availability.',
+    content:`
+<h3>What to Monitor</h3>
+<table class="data-table"><thead><tr><th>Signal</th><th>Tool</th><th>Alert When</th></tr></thead><tbody>
+<tr><td>Output quality score</td><td>Langfuse, Braintrust</td><td>LLM judge score drops &gt;10% WoW</td></tr>
+<tr><td>Input data drift</td><td>WhyLabs, Evidently</td><td>PSI &gt; 0.25 vs training baseline</td></tr>
+<tr><td>p95 latency</td><td>Datadog, Grafana</td><td>Doubles vs 7-day baseline</td></tr>
+<tr><td>Error rate</td><td>Sentry, Datadog</td><td>&gt;1% of requests</td></tr>
+<tr><td>Cost per request</td><td>LLM provider dashboards</td><td>+30% over 7 days</td></tr>
+<tr><td>Override / correction rate</td><td>Product analytics</td><td>+25% WoW (leading quality signal)</td></tr>
+<tr><td>Safety guardrail triggers</td><td>Custom + LLM judge</td><td>&gt;0.1% of requests</td></tr>
+</tbody></table>
+
+<h3>LLM Trace Dashboards</h3>
+<p>Every AI request should emit a trace: input, output, latency, token count, cost, and quality score. Tools like Langfuse and Helicone provide out-of-the-box dashboards. As a PM, you should have a weekly ritual of reviewing quality score trends and failure clusters — these are your early warning system for model degradation.</p>`
+  },
+  'safety': {
+    tag:'Ethics',
+    title:'AI Safety in Products',
+    summary:'Product-level AI safety is distinct from model-level safety. It\'s about what guardrails, abuse surfaces, and safety UX you design as a PM. You can\'t control what the model does, but you can control what it\'s exposed to and what happens when it fails.',
+    content:`
+<h3>AI Safety Layers</h3>
+<div class="framework-grid">
+<div class="fw-card"><div class="fw-card-label">Layer 1</div><div class="fw-card-title">Input Guardrails</div><div class="fw-card-desc">Filter or flag harmful inputs before they reach the model. Classifier-based or rule-based.</div></div>
+<div class="fw-card"><div class="fw-card-label">Layer 2</div><div class="fw-card-title">System Prompt</div><div class="fw-card-desc">Define model behavior, persona, and constraints. First line of defense for output quality and safety.</div></div>
+<div class="fw-card"><div class="fw-card-label">Layer 3</div><div class="fw-card-title">Output Filtering</div><div class="fw-card-desc">Post-generation checks for harmful content, PII, banned topics before serving to user.</div></div>
+<div class="fw-card"><div class="fw-card-label">Layer 4</div><div class="fw-card-title">UX Safety Nets</div><div class="fw-card-desc">Confirmation dialogs for irreversible actions, disclaimers for high-stakes outputs, reporting tools.</div></div>
+</div>
+
+<h3>Abuse Surface Mapping</h3>
+<p>For every AI feature, explicitly map: what is the worst way a bad actor could use this? What's the potential harm? What's the realistic frequency? Then design mitigations proportional to severity × frequency. Don't over-restrict low-risk cases (kills user experience) or under-protect high-risk ones (causes harm).</p>
+
+<div class="callout"><div class="callout-label">Red Team Exercise</div><p>Before every AI feature launch, run a structured red-teaming session. Participants try to get the AI to produce harmful, biased, or out-of-spec outputs. Document every successful attack. Fix P0 issues before launch; add remaining findings to the backlog with severity ratings.</p></div>`
+  },
+  'feedback': {
+    tag:'Metrics',
+    title:'Feedback Loop Design',
+    summary:'The quality of your AI feedback loop determines how fast your model improves. Designing feedback collection into the product — not bolted on as an afterthought — is one of the highest-leverage architectural decisions an AI PM makes.',
+    content:`
+<h3>Feedback Signal Types</h3>
+<table class="data-table"><thead><tr><th>Signal</th><th>Explicit?</th><th>Quality</th><th>Volume</th></tr></thead><tbody>
+<tr><td>Thumbs up/down</td><td>Yes</td><td>Medium (noisy)</td><td>High (if well placed)</td></tr>
+<tr><td>User correction</td><td>Yes</td><td>High (gold label)</td><td>Low-Medium</td></tr>
+<tr><td>Task completion</td><td>No (inferred)</td><td>Medium</td><td>High</td></tr>
+<tr><td>Copy / share / save</td><td>No (behavioral)</td><td>Medium-High</td><td>Medium</td></tr>
+<tr><td>Abandonment / reversion</td><td>No (behavioral)</td><td>Medium</td><td>Medium</td></tr>
+<tr><td>Dwell time on AI output</td><td>No (behavioral)</td><td>Low-Medium</td><td>High</td></tr>
+</tbody></table>
+
+<h3>Feedback Collection Design Principles</h3>
+<ul>
+<li><strong>Make feedback cheap:</strong> Thumbs down must be one click. No required explanation. Optional follow-up.</li>
+<li><strong>Collect corrections:</strong> When users edit AI output, capture the before/after. This is your highest-quality training signal.</li>
+<li><strong>Close the loop:</strong> If a user reports a problem, acknowledge it in the UI. Users who give feedback and see it acted on give 3x more feedback.</li>
+<li><strong>Active learning triggers:</strong> When model confidence is low, proactively request feedback rather than waiting.</li>
+</ul>`
+  },
+  'stakeholder': {
+    tag:'Delivery',
+    title:'Stakeholder Management for AI',
+    summary:'AI products create unique stakeholder challenges: executives overestimate what\'s possible, underestimate what\'s hard, and have limited tolerance for probabilistic outcomes. Your job is calibrated expectation management without being a pessimist.',
+    content:`
+<h3>Common AI Stakeholder Patterns</h3>
+<div class="framework-grid">
+<div class="fw-card"><div class="fw-card-label">Pattern A</div><div class="fw-card-title">The Hype Driver</div><div class="fw-card-desc">"Why can't we just use ChatGPT for this?" — Wants AI everywhere, fast. Needs: grounding in complexity and timeline, but not resistance.</div></div>
+<div class="fw-card"><div class="fw-card-label">Pattern B</div><div class="fw-card-title">The Skeptic</div><div class="fw-card-desc">"AI is just statistics." — Wants to see hard evidence. Needs: specific metrics, concrete ROI, and proof-of-concept first.</div></div>
+<div class="fw-card"><div class="fw-card-label">Pattern C</div><div class="fw-card-title">The Risk Avoider</div><div class="fw-card-desc">"What if AI makes a mistake?" — Worried about liability and trust. Needs: responsible AI framework, clear fallbacks, and accountability.</div></div>
+<div class="fw-card"><div class="fw-card-label">Pattern D</div><div class="fw-card-title">The Metrics Purist</div><div class="fw-card-desc">"Show me the A/B test." — Won't greenlight without proof. Needs: experiment design upfront and clear success criteria.</div></div>
+</div>
+
+<h3>Communicating AI Limitations</h3>
+<ul>
+<li>Never promise accuracy percentages to non-technical stakeholders — they'll anchor on them.</li>
+<li>Use analogies: "Our model is like a very fast, very knowledgeable junior analyst. It's right 85% of the time, but you still want a human review on the critical 15%."</li>
+<li>Frame failures as learning signals, not bugs: "Each error tells us what the model needs to learn next."</li>
+<li>Set confidence intervals on timelines: "I'm 70% confident we hit the Q3 quality target. The main risk is data quality, which we're mitigating by X."</li>
+</ul>`
+  },
+  'go-to-market': {
+    tag:'Delivery',
+    title:'AI Product GTM',
+    summary:'AI launches have unique GTM considerations: capability messaging is tricky (don\'t over-promise), failure in public is high-stakes (AI errors go viral), and trust-building is a journey (users don\'t adopt AI features on day one).',
+    content:`
+<h3>AI Launch Strategy Framework</h3>
+<div class="timeline">
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-label">Phase 1</div><div class="tl-title">Closed Alpha (Internal)</div><div class="tl-desc">Internal team only. High failure tolerance. Goal: find the worst failures before any external exposure.</div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-label">Phase 2</div><div class="tl-title">Private Beta (Trusted Users)</div><div class="tl-desc">Invite high-engagement, forgiving users. Explicit "beta" labeling. Close feedback loop personally. Goal: real-world quality validation.</div></div>
+<div class="tl-item"><div class="tl-dot"></div><div class="tl-label">Phase 3</div><div class="tl-title">Public Beta (Broad)</div><div class="tl-desc">Wide access with beta disclaimer. Monitor metrics daily. Have incident response ready. Goal: scale test with lower risk framing.</div></div>
+<div class="tl-item"><div class="tl-dot" style="background:var(--green)"></div><div class="tl-label">Phase 4</div><div class="tl-title">GA Launch</div><div class="tl-desc">Full launch with confident capability messaging. Success stories ready. Monitoring at peak. Goal: market awareness and adoption.</div></div>
+</div>
+
+<h3>AI Capability Messaging</h3>
+<div class="callout"><div class="callout-label">❌ Avoid</div><p>"Our AI is 99% accurate" / "Fully automated" / "No human needed"</p></div>
+<div class="callout info"><div class="callout-label">✅ Use Instead</div><p>"Our AI handles [X]% of cases automatically, with human review for the rest" / "Reduces time from 2 hours to 15 minutes" / "Your team focuses on exceptions, AI handles routine cases"</p></div>`
+  },
+  'ml-collab': {
+    tag:'Delivery',
+    title:'Working with ML Teams',
+    summary:'The PM-ML interface is where most AI products succeed or fail. PMs who treat ML as a black box get models that don\'t serve users. PMs who micromanage model decisions lose their engineers. The right interface is collaborative problem framing.',
+    content:`
+<h3>The PM-ML Interface Contract</h3>
+<table class="data-table"><thead><tr><th>PM Provides</th><th>ML Team Provides</th></tr></thead><tbody>
+<tr><td>User problem definition and business context</td><td>Feasibility assessment and timeline estimate</td></tr>
+<tr><td>Success criteria in product terms</td><td>Success criteria in model terms (precision, recall, latency)</td></tr>
+<tr><td>Eval set of labeled examples</td><td>Offline eval results before any product integration</td></tr>
+<tr><td>Edge case catalog from user research</td><td>Model behavior analysis on edge cases</td></tr>
+<tr><td>Feedback collection requirements</td><td>Training pipeline and retraining cadence</td></tr>
+<tr><td>Production monitoring requirements</td><td>Model observability and drift detection</td></tr>
+</tbody></table>
+
+<h3>Common PM-ML Misalignments</h3>
+<ul>
+<li><strong>Product timeline ≠ model timeline:</strong> Model development has high variance. Build buffers and have fallback plans.</li>
+<li><strong>"Better accuracy" ≠ better product:</strong> A model with 5% higher precision but 3x higher latency may be worse for users. Define the tradeoff explicitly upfront.</li>
+<li><strong>Offline metrics ≠ online metrics:</strong> A model that scores well on eval set may underperform in production due to distribution shift. Always validate online.</li>
+</ul>`
+  },
+  'jobs-to-be-done': {
+    tag:'Discovery',
+    title:'JTBD for AI Products',
+    summary:'Jobs-to-be-Done is the clearest lens for deciding where AI belongs in your product. The question is not "can AI do this?" but "which job are users hiring AI to do, and does AI do it better than alternatives?"',
+    content:`
+<h3>JTBD for AI: The Three Questions</h3>
+<ul>
+<li><strong>What job is being done?</strong> "Write a first draft of my weekly report" vs "ensure my weekly report is error-free" — same user, different jobs, different AI capabilities needed.</li>
+<li><strong>Replace or Augment?</strong> Replace: AI does the job end-to-end (automate). Augment: AI assists human doing the job (copilot). Both are valid — the choice determines UX design radically.</li>
+<li><strong>What's the progress dimension?</strong> Users hire products to make progress. What progress does AI unlock that wasn't possible before?</li>
+</ul>
+
+<h3>AI Job Categories</h3>
+<table class="data-table"><thead><tr><th>Category</th><th>Example</th><th>AI Fit</th><th>Human Override Need</th></tr></thead><tbody>
+<tr><td>Repetitive expert tasks</td><td>Invoice coding, form parsing</td><td>High — structured, rule-based</td><td>Low</td></tr>
+<tr><td>First draft generation</td><td>Email, report, code scaffolding</td><td>High — user edits anyway</td><td>Medium (review)</td></tr>
+<tr><td>Pattern detection at scale</td><td>Anomaly detection, churn signals</td><td>High — superhuman scale</td><td>Medium (threshold)</td></tr>
+<tr><td>Judgment calls</td><td>Hiring decisions, legal advice</td><td>Low — AI as input, not decision</td><td>Always</td></tr>
+<tr><td>Relationship-dependent tasks</td><td>Negotiation, empathy, counseling</td><td>Low — human irreplaceable</td><td>Always</td></tr>
+</tbody></table>`
+  },
+  'persona': {
+    tag:'Discovery',
+    title:'AI User Personas',
+    summary:'Standard personas need an AI trust dimension. Where a user sits on the trust-skepticism spectrum determines how you design onboarding, confidence indicators, and explainability — more than demographics or job title.',
+    content:`
+<h3>AI Trust Persona Archetypes</h3>
+<div class="framework-grid">
+<div class="fw-card"><div class="fw-card-label">Archetype 1</div><div class="fw-card-title">The AI Skeptic</div><div class="fw-card-desc">Doesn't trust AI outputs. Will verify everything. Needs: transparency, source citations, ability to see the reasoning. Don't try to hide AI from them.</div></div>
+<div class="fw-card"><div class="fw-card-label">Archetype 2</div><div class="fw-card-title">The Cautious Adopter</div><div class="fw-card-desc">Curious but worried about mistakes. Will try AI if risk feels low. Needs: safety nets, easy undo, clear confidence indicators.</div></div>
+<div class="fw-card"><div class="fw-card-label">Archetype 3</div><div class="fw-card-title">The Power User</div><div class="fw-card-desc">Wants AI to do more. Tolerates errors in exchange for speed. Needs: batch operations, fewer confirmation dialogs, advanced controls.</div></div>
+<div class="fw-card"><div class="fw-card-label">Archetype 4</div><div class="fw-card-title">The Passive Recipient</div><div class="fw-card-desc">AI is in the background — they didn't choose it. Needs: non-intrusive AI, no surprises, clarity about what AI is doing.</div></div>
+</div>
+
+<h3>The Trust Ladder by Persona</h3>
+<p>Design your AI onboarding flow to match where users start on the trust ladder. Skeptics start at Level 1 (Aware) and need proof before trying. Power Users might start at Level 3 (Trust). Your first AI experience should be designed for the Cautious Adopter — it converts the most users to reliable AI use.</p>`
+  },
+  'opportunity-sizing': {
+    tag:'Discovery',
+    title:'Opportunity Sizing',
+    summary:'Every AI investment needs a business case. Quantifying AI value is harder than it sounds — time savings are real but hard to measure, and quality improvements are diffuse. Here\'s how to build credible estimates.',
+    content:`
+<h3>AI Value Trees</h3>
+<p>Break the total value of an AI feature into measurable components:</p>
+<div class="code-block"><span class="kw">AI Document Processing Feature — Value Tree</span>
+
+<span class="cm">Direct value</span>
+├── Time saved per document: 45 min → 8 min (-37 min)
+├── Documents processed per analyst per day: 12 → 18 (+50%)
+└── Error rate reduction: 4.2% → 1.1% (-3.1pp)
+
+<span class="cm">Downstream business value</span>
+├── Analyst capacity freed: +6 docs/day × 50 analysts × 250 days = 75,000 docs/year
+├── Error cost avoided: 3.1pp × $800/error × 50K docs = $1.24M/year
+└── Revenue from capacity: 75K docs × $45 margin = $3.375M/year
+
+<span class="cm">Total AI feature value: ~$4.6M/year</span></div>
+
+<h3>AI ROI Calculation</h3>
+<table class="data-table"><thead><tr><th>Component</th><th>How to Estimate</th></tr></thead><tbody>
+<tr><td>Time saved</td><td>Task time study (current vs AI-assisted). Weight by usage volume.</td></tr>
+<tr><td>Error reduction</td><td>Current error rate × error cost × expected improvement %</td></tr>
+<tr><td>Conversion uplift</td><td>A/B test estimate or competitive benchmark × revenue per conversion</td></tr>
+<tr><td>Support ticket deflection</td><td>AI answers % of support queries × cost per ticket × volume</td></tr>
+<tr><td>Inference cost</td><td>Token cost estimate × usage projection × markup</td></tr>
+</tbody></table>`
+  },
+  'agile-ai': {
+    tag:'Delivery',
+    title:'Agile for AI Teams',
+    summary:'Standard agile works for product delivery but breaks for ML research. AI teams need a hybrid model: time-boxed product sprints for features, and milestone-based research cycles for model development.',
+    content:`
+<h3>The Dual-Track AI Delivery Model</h3>
+<div class="framework-grid">
+<div class="fw-card"><div class="fw-card-label">Track 1</div><div class="fw-card-title">Product Sprints</div><div class="fw-card-desc">2-week sprints for UX, integration, and product features. Standard agile. Velocity measurable. Daily standups apply.</div></div>
+<div class="fw-card"><div class="fw-card-label">Track 2</div><div class="fw-card-title">ML Research Cycles</div><div class="fw-card-desc">4-6 week milestone cycles for model development. Time-boxed experiments with go/no-go decisions at milestone. Not sprint velocity.</div></div>
+</div>
+
+<h3>Sprint Planning for AI Teams</h3>
+<ul>
+<li><strong>Separate model stories from product stories:</strong> "Improve recall from 0.72 to 0.80" is an ML story. "Add confidence indicator to search results" is a product story. They have different estimation and tracking methods.</li>
+<li><strong>Research spikes:</strong> Use time-boxed spikes (1-3 days) to resolve ML uncertainty before committing to a sprint. "Spike: evaluate 3 embedding models for our domain."</li>
+<li><strong>Go/No-Go gates:</strong> At the end of each ML milestone, have a formal evaluation: did we hit the quality bar? If not, scope options: continue, descope, or ship with limitations.</li>
+</ul>
+
+<h3>Managing Uncertainty with Stakeholders</h3>
+<div class="callout info"><div class="callout-label">Template Language</div><p>"We're committing to the product capability [X] by Q3. The ML track is targeting [model metric] as the quality bar. If the ML track is below bar by [date], we'll discuss options: shipping with limitations, extending timeline, or using a rules-based fallback."</p></div>`
+  },
+  'transparency': {
+    tag:'Ethics',
+    title:'Transparency & Explainability',
+    summary:'Explainability is both a UX pattern and a regulatory requirement. The question is not just "can we explain the AI?" but "who needs what explanation, at what level of detail, in what context?"',
+    content:`
+<h3>Explanation Audience Matrix</h3>
+<table class="data-table"><thead><tr><th>Audience</th><th>What They Need</th><th>UX Pattern</th></tr></thead><tbody>
+<tr><td>End user (consumer)</td><td>"Why did AI recommend this?"</td><td>Natural language explanation, 1-2 sentences</td></tr>
+<tr><td>Power user</td><td>"What factors drove this score?"</td><td>Feature importance, top contributing signals</td></tr>
+<tr><td>Domain expert</td><td>"Can I see the evidence?"</td><td>Source citations, confidence ranges, methodology</td></tr>
+<tr><td>Regulator / auditor</td><td>"Is this system fair and documented?"</td><td>Model card, audit trail, disparate impact report</td></tr>
+</tbody></table>
+
+<h3>EU AI Act Transparency Obligations</h3>
+<ul>
+<li><strong>Chatbots:</strong> Must disclose that users are interacting with AI (unless obvious from context)</li>
+<li><strong>Deep fakes:</strong> Must be labeled as AI-generated</li>
+<li><strong>High-risk systems:</strong> Must provide instructions for use, performance metrics, and oversight mechanisms</li>
+<li><strong>Emotion recognition / biometric:</strong> Strict transparency and consent requirements</li>
+</ul>
+
+<h3>Explainability Methods (PM Level)</h3>
+<ul>
+<li><strong>LIME:</strong> Locally approximates the model with a simpler explainable model per input. Good for text classification explanations in UI.</li>
+<li><strong>SHAP:</strong> Assigns a contribution score to each feature. Powerful for tabular data; shows "this prediction was driven 40% by income level, 30% by tenure..."</li>
+<li><strong>Attention visualization:</strong> For transformer models, shows which input tokens the model attended to. Useful for highlighting evidence in document analysis.</li>
+</ul>`
+  },
+  'human-in-loop': {
+    tag:'Ethics',
+    title:'Human-in-the-Loop Design',
+    summary:'HITL is not a failure of AI — it\'s responsible design. Deciding when to involve humans, how much friction to add, and who is accountable for AI decisions are core PM choices that determine both safety and user experience.',
+    content:`
+<h3>HITL Decision Framework</h3>
+<table class="data-table"><thead><tr><th>Decision Type</th><th>AI Role</th><th>Human Role</th><th>Example</th></tr></thead><tbody>
+<tr><td>Routine, reversible, low-stakes</td><td>Decide autonomously</td><td>Review if they want to</td><td>Email categorization</td></tr>
+<tr><td>Complex, reversible, medium-stakes</td><td>Recommend with confidence</td><td>Review and approve</td><td>Contract clause flagging</td></tr>
+<tr><td>High-stakes, semi-reversible</td><td>Provide options and rationale</td><td>Must decide</td><td>Treatment recommendation</td></tr>
+<tr><td>Irreversible, high-consequence</td><td>Provide analysis only</td><td>Full decision authority</td><td>Loan denial, hiring</td></tr>
+</tbody></table>
+
+<h3>Confidence Threshold Design</h3>
+<div class="code-block"><span class="cm"># Confidence-Based Routing</span>
+<span class="kw">if</span> confidence >= <span class="num">0.90</span>:
+    <span class="cm"># Auto-process, log for audit</span>
+    route = <span class="str">"auto"</span>
+<span class="kw">elif</span> confidence >= <span class="num">0.70</span>:
+    <span class="cm"># Show to user with confidence indicator</span>
+    route = <span class="str">"suggest_with_indicator"</span>
+<span class="kw">else</span>:
+    <span class="cm"># Route to human review queue</span>
+    route = <span class="str">"human_review"</span></div>
+
+<div class="callout success"><div class="callout-label">Design Principle</div><p>Calibrate your thresholds using real override and correction data from production. Start conservative (route more to human review), then relax thresholds as you build evidence that the model is trustworthy at each confidence level.</p></div>`
+  },
+  'prompt-pm': {
+    tag:'Skills',
+    title:'Prompt Engineering for PMs',
+    summary:'PMs don\'t need to be prompt engineers, but they do need to write system prompts, evaluate prompt quality, and spec prompt requirements in PRDs. These skills let you move faster and collaborate more effectively with ML teams.',
+    content:`
+<h3>The PM Prompt Toolkit</h3>
+<ul>
+<li><strong>System prompt writing:</strong> Define the AI's persona, constraints, tone, and output format. This is your most powerful control lever — treat it like product copy, not technical config.</li>
+<li><strong>Few-shot examples:</strong> 3-5 examples of desired input/output pairs dramatically improve consistency. PMs should write these as part of the spec.</li>
+<li><strong>Output format specs:</strong> Define the exact output format in the prompt (JSON schema, markdown structure, specific field names). Structured outputs are more reliable and easier to render.</li>
+<li><strong>Prompt regression testing:</strong> Every time you change a system prompt, run your eval set to confirm quality didn't regress. Treat prompt changes like code changes.</li>
+</ul>
+
+<h3>System Prompt Template for PMs</h3>
+<div class="code-block"><span class="cm">## System Prompt Template</span>
+
+<span class="kw">Role:</span> You are a [persona] for [product].
+
+<span class="kw">Goal:</span> Help users [primary job to be done].
+
+<span class="kw">Tone:</span> [professional/friendly/concise] — avoid [specific patterns].
+
+<span class="kw">Constraints:</span>
+- Only answer questions about [domain]
+- If uncertain, say so rather than guessing
+- Always [specific requirement]
+- Never [prohibited behavior]
+
+<span class="kw">Output format:</span> [Specify format, structure, length]
+
+<span class="kw">Examples:</span> [2-3 input/output examples]</div>
+
+<h3>Prompt Quality Checklist</h3>
+<ul>
+<li>Does the prompt specify the persona, task, constraints, and output format?</li>
+<li>Are there at least 3 few-shot examples covering typical cases?</li>
+<li>Does the prompt handle the "I don't know" case explicitly?</li>
+<li>Is it tested against your edge case catalog?</li>
+<li>Is it version-controlled alongside your codebase?</li>
+</ul>`
+  },
+  'interview': {
+    tag:'Career',
+    title:'AI PM Interview Prep',
+    summary:'AI PM interviews at top tech companies test product thinking, technical fluency, metrics design, and ethical reasoning — all applied to AI-specific scenarios. Here\'s the framework for each question type.',
+    content:`
+<h3>AI PM Interview Question Types</h3>
+<div class="framework-grid">
+<div class="fw-card"><div class="fw-card-label">Question Type 1</div><div class="fw-card-title">Product Design</div><div class="fw-card-desc">"Design an AI feature for [product]." Framework: User → Job → AI fit → Success metrics → Edge cases → Responsible AI.</div></div>
+<div class="fw-card"><div class="fw-card-label">Question Type 2</div><div class="fw-card-title">Metrics</div><div class="fw-card-desc">"How would you measure success for [AI feature]?" Framework: North star → AI-specific metrics (override rate, adoption depth) → guardrails → leading indicators.</div></div>
+<div class="fw-card"><div class="fw-card-label">Question Type 3</div><div class="fw-card-title">Strategy</div><div class="fw-card-desc">"Should [company] build [AI product]?" Framework: TAM → moat analysis → build/buy/partner → responsible AI risks → roadmap.</div></div>
+<div class="fw-card"><div class="fw-card-label">Question Type 4</div><div class="fw-card-title">Technical</div><div class="fw-card-desc">"Explain how [LLM/RAG/fine-tuning] works." Framework: ELI5 → PM-relevant implications → when to use → tradeoffs.</div></div>
+</div>
+
+<h3>AI PM Interview Framework (STAR-AI)</h3>
+<ul>
+<li><strong>S</strong>ituation: User problem and business context</li>
+<li><strong>T</strong>ask: Define the AI's specific job</li>
+<li><strong>A</strong>I fit: Why AI, not rules? What capability does it bring?</li>
+<li><strong>R</strong>esponsible: What are the risks, edge cases, and ethical considerations?</li>
+</ul>
+
+<h3>Technical Questions to Know Cold</h3>
+<ul>
+<li>What is RAG and when would you use it vs fine-tuning?</li>
+<li>What is hallucination and how do you mitigate it in a product?</li>
+<li>How would you set up an eval framework for a new AI feature?</li>
+<li>What's the difference between precision and recall, and which matters for [X use case]?</li>
+<li>How do you detect and handle model drift in production?</li>
+</ul>`
+  },
+  'team-structure': {
+    tag:'Career',
+    title:'AI Team Structures',
+    summary:'How AI teams are organized determines speed, quality, and alignment. The right structure depends on company stage, AI maturity, and whether AI is the product or a feature of the product.',
+    content:`
+<h3>AI Organization Models</h3>
+<table class="data-table"><thead><tr><th>Model</th><th>Structure</th><th>Best For</th><th>Risk</th></tr></thead><tbody>
+<tr><td>Central AI Platform</td><td>Centralized ML team serves all product teams</td><td>Early AI maturity, shared infrastructure</td><td>Bottleneck, context loss</td></tr>
+<tr><td>Embedded AI</td><td>ML engineers sit within product squads</td><td>Mature AI orgs, feature-heavy AI products</td><td>Duplicated infra, skill silos</td></tr>
+<tr><td>Hub and Spoke</td><td>Central platform team + embedded ML per squad</td><td>Scale-ups, hybrid AI maturity</td><td>Coordination overhead</td></tr>
+<tr><td>AI-Native Squad</td><td>PM + ML + Design + Data as one unit from day 1</td><td>AI-first products, startups</td><td>Requires ML-fluent PM</td></tr>
+</tbody></table>
+
+<h3>The AI PM Triad</h3>
+<p>The most effective AI product teams operate as a triad: <strong>PM</strong> (defines what and why), <strong>ML Engineer</strong> (defines how and what's feasible), and <strong>Data Scientist / Analyst</strong> (defines how we know it's working). All three must be present from discovery through delivery — not just at handoffs.</p>
+
+<h3>PM Skills for AI-Native Orgs</h3>
+<ul>
+<li>Can write a clear ML problem statement from a user problem</li>
+<li>Can interpret precision/recall tradeoffs and make product decisions from them</li>
+<li>Can write eval criteria and contribute to golden sets</li>
+<li>Can run responsible AI reviews and consequence scans</li>
+<li>Can communicate model uncertainty to non-technical stakeholders without dumbing it down</li>
+</ul>`
+  },
+  'pm-tools': {
+    tag:'Career',
+    title:'AI PM Tool Stack',
+    summary:'The AI PM tool landscape evolved rapidly through 2025-2026. This is the current best-in-class stack for discovery, roadmapping, analytics, evaluation, and collaboration in 2026.',
+    content:`
+<h3>2026 AI PM Tool Stack</h3>
+<div class="tools-grid" style="margin-top:0.5rem">
+<div class="tool-item"><div class="tool-emoji">🔍</div><div><div class="tool-name">Dovetail</div><div class="tool-use">User research synthesis — AI-powered interview tagging and insight clustering</div></div></div>
+<div class="tool-item"><div class="tool-emoji">🗺️</div><div><div class="tool-name">Linear / Productboard</div><div class="tool-use">Feature tracking with AI scoring assists and roadmap visualization</div></div></div>
+<div class="tool-item"><div class="tool-emoji">📊</div><div><div class="tool-name">Amplitude</div><div class="tool-use">AI feature adoption, override rate tracking, behavioral cohorts</div></div></div>
+<div class="tool-item"><div class="tool-emoji">🧪</div><div><div class="tool-name">Statsig</div><div class="tool-use">Feature flags and A/B tests with AI-specific statistical methods</div></div></div>
+<div class="tool-item"><div class="tool-emoji">🔭</div><div><div class="tool-name">Langfuse</div><div class="tool-use">LLM observability: traces, cost per session, quality score trends</div></div></div>
+<div class="tool-item"><div class="tool-emoji">🎭</div><div><div class="tool-name">Braintrust</div><div class="tool-use">Eval platform: golden set management, LLM judge, CI/CD eval gates</div></div></div>
+<div class="tool-item"><div class="tool-emoji">✍️</div><div><div class="tool-name">Claude / Cursor</div><div class="tool-use">PRD writing, spec drafting, research synthesis, prompt prototyping</div></div></div>
+<div class="tool-item"><div class="tool-emoji">🔬</div><div><div class="tool-name">PromptFoo</div><div class="tool-use">Prompt regression testing, automated eval across model versions</div></div></div>
+<div class="tool-item"><div class="tool-emoji">📈</div><div><div class="tool-name">Weights & Biases</div><div class="tool-use">ML experiment tracking, model performance dashboards for PM visibility</div></div></div>
+<div class="tool-item"><div class="tool-emoji">🛡️</div><div><div class="tool-name">Patronus AI</div><div class="tool-use">Automated safety and quality evals, hallucination detection</div></div></div>
+</div>
+
+<h3>AI PM Daily Workflow</h3>
+<ul>
+<li><strong>Morning:</strong> Check Langfuse quality score dashboard (5 min). Any overnight quality regressions?</li>
+<li><strong>Weekly:</strong> Review Amplitude AI adoption metrics. Override rate trending? Adoption depth moving?</li>
+<li><strong>Sprint:</strong> Update eval set with new edge cases discovered in user research. Run prompt regression tests before any system prompt change.</li>
+<li><strong>Monthly:</strong> Model card review. Data drift check. Responsible AI checklist refresh.</li>
+</ul>`
+  }
+};
+
+function openPanel(id) {
+  const p = panels[id];
+  if(!p) return;
+  const inner = document.getElementById('panelInner');
+  inner.innerHTML = `
+    <div class="panel-tag">${p.tag}</div>
+    <div class="panel-title">${p.title}</div>
+    <div class="panel-summary">${p.summary}</div>
+    ${p.content}
+  `;
+  document.getElementById('panelOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('panelContent').scrollTop = 0;
+}
+</script>
+</body>
+</html>
